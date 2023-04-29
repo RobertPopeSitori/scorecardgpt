@@ -1,0 +1,50 @@
+.THIS .olc-width-pc-10{
+    width: 10%;
+}
+
+.THIS .olc-width-pc-20{
+    width: 20%;
+}
+
+.THIS .olc-width-pc-25{
+    width: 25%;
+}
+
+.THIS .olc-width-pc-30{
+    width: 30%;
+}
+
+.THIS .olc-width-pc-40{
+    width: 40%;
+}
+
+.THIS .olc-container{
+    clear:both;
+}
+
+.THIS .olc-pull-left{
+    float: left;
+    width: auto;
+}
+
+.THIS .olc-pull-right{
+    float: right;
+    width: auto;
+}
+
+.THIS .olc-padded-top5{
+    padding-top: 5px;
+}
+
+.THIS .olc-padded-top10{
+    padding-top: 10px;
+}
+
+.THIS .olc-hidden {
+	display: none;
+}
+
+.THIS .olc-max-height-400 {
+	max-height : 400px;
+	overflow: auto;
+}

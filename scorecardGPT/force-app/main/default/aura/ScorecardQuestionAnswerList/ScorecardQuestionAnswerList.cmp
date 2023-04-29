@@ -1,0 +1,139 @@
+<aura:component  implements="flexipage:availableForAllPageTypes" access="global"  >
+    <aura:attribute name="items" type="List"/>
+    <aura:attribute name="title" type="string" default="Answers"/>
+
+    <aura:attribute name="showPreviewModal" type="boolean" default="false"/>
+    <aura:attribute name="previewHtml" type="string" default=""/>
+    <aura:attribute name="previewStatus" type="string" default=""/>
+    <aura:attribute name="previewScore" type="string" default=""/>
+    <aura:attribute name="itemId" type="string" />
+    <aura:attribute name="previewScoreName" type="string" default=""/>
+
+    <div class="slds-card-wrapper">
+        <article class="slds-card">
+            <div class="slds-card__header slds-grid">
+                <header class="slds-media slds-media--center slds-has-flexi-truncate">
+                    <div class="slds-media__figure">
+                        <lightning:icon iconName="standard:service_report" size="small" alternativeText="{!v.title}"></lightning:icon>
+                    </div>
+                    <div class="slds-media__body">
+                        <h2>
+                            <span class="slds-card__header-title slds-truncate slds-m-right--xx-small" title="{!v.title}">{!v.title}</span>
+                        </h2>
+                    </div>
+                </header>
+            </div>
+            <div class="slds-card__body">
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                    <thead>
+                        <tr class="slds-line-height_reset">
+                            <th class="olc-width-pc-20" scope="col">
+                                <div class="slds-truncate" title="Status">Status</div>
+                            </th>
+                            <th class="olc-width-pc-10" scope="col">
+                                <div class="slds-truncate" title="Score">Score</div>
+                            </th>
+                            <th class="olc-width-pc-10" scope="col">
+                                <div class="slds-truncate" title="Files">Files</div>
+                            </th>
+                            <th class="olc-width-pc-40" scope="col">
+                                <div class="slds-truncate" title="Last Modified">Last Modified By</div>
+                            </th>
+                            <th class="olc-width-pc-20 olc-pull-right" scope="col">
+                                <div class="slds-truncate" title="Actions">Actions</div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <aura:iteration items="{!v.items}" var="item">
+                            <tr class="slds-hint-parent">
+                                <th data-label="Status" scope="row">
+                                    <div class="olc-container">
+                                        <div class="olc-pull-left">
+                                           <aura:if isTrue="{!item.status == 'Completed'}">
+                                             <div class="slds-progress-ring slds-progress-ring_complete">
+                                                  <div id="progressContainer" class="slds-progress-ring__complete" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"></div>
+                                                  <div class="slds-progress-ring__content">
+                                                       <lightning:icon iconName="utility:check" size="xx-small" title="{!item.status}" alternativeText="{!item.status}" />
+                                                  </div>
+                                             </div>
+                                           </aura:if>
+                                           <aura:if isTrue="{!item.status == 'In Progress'}">
+                                             <div class="slds-progress-ring slds-progress-ring_warning">
+                                                <div id="progressContainer" class="slds-progress-ring__warning" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"></div>
+                                                <div class="slds-progress-ring__content">
+                                                    <lightning:icon iconName="utility:clock" size="xx-small" title="{!item.status}" alternativeText="{!item.status}" />
+                                                </div>
+                                             </div>
+                                           </aura:if>
+                                           <aura:if isTrue="{!item.status == 'For Review' || item.status == 'In Review' || item.status == 'For Final Review' || item.status == 'In Final Review'}">
+                                             <div class="slds-progress-ring slds-progress-ring_warning">
+                                                  <div id="progressContainer" class="slds-progress-ring__warning" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"></div>
+                                                <div class="slds-progress-ring__content">
+                                                    <lightning:icon iconName="utility:record_lookup" size="xx-small" title="{!item.status}" alternativeText="{!item.status}" />
+                                                </div>
+                                             </div>
+                                           </aura:if>
+                                        </div>
+                                        <div class="olc-pull-left">&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                                        <div class="olc-pull-left olc-padded-top5">{!item.status}</div>
+                                    </div>
+                                </th>
+                                <td data-label="Score">
+                                    <div class="slds-truncate" title="{!item.rubric.score}">{!item.rubric.score}</div>
+                                </td>
+                                <td data-label="Number of Files">
+                                    <div class="slds-truncate" title="{! 'Number of Files : ' + item.files}">{!item.files}</div>
+                                </td>
+                                <td data-label="Last Modified By">
+                                    <div class="slds-truncate" title="{!item.createdBy}">{!item.createdBy}</div>
+                                </td>
+                                <td data-label="Actions">
+                                   <div class="slds-button-group olc-pull-right" role="group">
+                                         <lightning:buttonIcon iconName="utility:preview" value="{!item.id}" onclick="{!c.onPreview}" title="Preview" alternativeText="Preview"/>
+                                         <aura:if isTrue="{!item.userCanEdit}">
+                                             <a href="{! 'scorecard-answer-form?question=' + item.questionId + '&amp;scorecard=' + item.scorecardId }">
+                                                  <lightning:buttonIcon iconName="utility:edit" title="Edit Answer" alternativeText="Edit Answer"/>
+                                             </a>
+                                         </aura:if>
+                                   </div>
+                                </td>
+                            </tr>
+                        </aura:iteration>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+    </div>
+
+	<aura:if isTrue="{!v.showPreviewModal}">
+        <div class="slds modal">
+
+            <div aura:id="PreviewModal" role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <div class="slds-modal__header slds-text-heading_large slds-text-align_center">
+                        Answer Preview
+                    </div>
+                    <div class="slds-modal__content slds-p-around--medium">
+						<div class="olc-max-height-400">
+							<div>Score : {!v.previewScore}</div><br />
+							<div>Rubric : <aura:unescapedHtml value="{!v.previewScoreName}" /> </div><br />
+							<aura:unescapedHtml value="{!v.previewHtml}"/>
+                            <div>      
+                                
+                             <c:AttachedFilesForPreview title="Submitted Files" recordType="Scorecard_Review__c" recordId="{!v.itemId}"/> 
+                               </div>
+                         
+                        </div>
+						
+                    </div>
+                    <div class="slds-modal__footer height60">
+                            <button class="slds-button slds-button--neutral" onclick="{!c.onPreviewClosed}">Done</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slds-backdrop slds-backdrop--open"></div>
+    </aura:if>
+
+</aura:component>

@@ -1,0 +1,50 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global" >
+    <footer id="footer" class="content-info" role="contentinfo">
+        <div class="bottom top">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3 copyright">
+                        Copyright © 2020 Online Learning Consortium
+                    </div>
+                    <div class="col-md-3 footer-address">
+                        <div class="f-adds"><i class="fa fa-flag"></i> <p>Address: Online Learning Consortium, 6 Liberty Square #2309, Boston, MA 02109 </p></div>
+                        <div class="f-phone"><i class="fa fa-phone"></i> <p>Phone: Voice: 617.716.1414</p></div>
+                        <div class="f-email"><i class="fa fa-envelope"></i> <p><a href="https://onlinelearningconsortium.org/contact-us-new/" targett="_blank">Contact Us</a></p></div>
+                        <div class="f-email"><i class="fa fa-envelope"></i> <p>Email:<a href="mailto:support@onlinelearning-c.org" data-aura-rendered-by="473:0">support@onlinelearning-c.org</a></p></div>
+                    </div>
+                    <div class="col-md-6 links">
+                        <ul id="menu-footer-menu-links" class="menu">
+                            <li class="menu-learn">
+                                <a href="https://onlinelearningconsortium.org/learn/">Learn</a>
+                            </li>
+                            <li class="menu-2019-conferences">
+                                <a href="https://onlinelearningconsortium.org/attend-2020/">2021 Conferences</a>
+                            </li>
+                            <li class="menu-read">
+                                <a href="https://onlinelearningconsortium.org/read/">Read</a>
+                            </li>
+                            <li class="menu-join-olc">
+                                <a href="https://onlinelearningconsortium.org/join/">Join OLC</a>
+                            </li>
+                            <li class="menu-connect">
+                                <a href="https://onlinelearningconsortium.org/connect/">Connect</a>
+                            </li>
+                            <li class="menu-about">
+                                <a href="https://onlinelearningconsortium.org/about/">About</a>
+                            </li>
+                            <li class="menu-support">
+                                <a href="https://onlinelearningconsortium.org/support/">Support</a>
+                            </li>
+                            <li class="menu-privacy">
+                                <a href="https://onlinelearningconsortium.org/about/privacy-policy/">Privacy</a>
+                            </li>
+                            <li class="menu-terms-and-conditions">
+                                <a href="https://onlinelearningconsortium.org/about/terms-conditions/">Terms and Conditions</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</aura:component>

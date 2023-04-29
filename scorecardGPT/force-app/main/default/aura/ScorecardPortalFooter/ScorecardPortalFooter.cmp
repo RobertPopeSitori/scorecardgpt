@@ -1,0 +1,11 @@
+<!--
+ - Created by robertpope on 5/16/19.
+ -->
+
+<aura:component description="ScorecardPortalFooter"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes"
+                access="global">
+    <div class="slds-docked-form-footer">
+        <a href="http://onlinelearningconsortium.org" target="_blank">© 2019 Online Learning Consortium</a>
+    </div>
+</aura:component>

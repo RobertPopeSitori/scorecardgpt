@@ -1,0 +1,34 @@
+.THIS .olc-pull-right{
+    float: right;
+    width: auto;
+}
+
+.THIS .olc-pull-left{
+    float: left;
+    width: auto;
+}
+
+.THIS .olc-padded-bottom20{
+    padding-bottom: 20px;
+}
+
+.THIS .olc-padded-left10{
+    padding-left: 10px;
+}
+
+.THIS .olc-container{
+    clear: both;
+    overflow: auto;
+}
+
+.THIS .olc-height-tall300{
+    height: 300px;
+}
+
+.THIS .olc-height-tall200{
+    height: 200px;
+}
+
+.THIS .olc-hidden {
+	display: none;
+}

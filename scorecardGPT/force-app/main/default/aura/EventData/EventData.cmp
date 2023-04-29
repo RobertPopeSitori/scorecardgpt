@@ -1,0 +1,85 @@
+<aura:component description="EventData" controller="DeleteTestDataCtrl" extends="Framework:BaseComponent">
+    <aura:registerEvent name="ComponentLoadedEvent" type="c:ComponentLoadedEvent"/>
+    <aura:method name="loadedPage" action="{!c.loadedPage}"/>
+    <aura:attribute name="isOrgId" type="Boolean" description=""/>
+    <aura:attribute name="siteObj" type="Object" default="{}"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <br/>
+    <div class="slds-container_medium slds-container_center">
+        <div class="slds-grid slds-grid_vertical">
+            <aura:if isTrue="{!v.isOrgId}">
+                <div class="slds-grid slds-grid_vertical slds-m-bottom_large">
+                    <div class="slds-text-heading_medium slds-m-bottom_large slds-text-color_destructive">
+                        <strong>You are in Master GCO. Please do not delete anything.</strong>
+                    </div>
+                </div>
+            </aura:if>
+            <div class="slds-grid slds-grid_vertical slds-m-bottom_large">
+                <div class="slds-text-heading_medium slds-m-bottom_large">
+                    <strong>Before running the script please read below:</strong>
+                </div>
+                <ul class="slds-list_dotted">
+                    <li><b>Clicking the below button will delete all Test data from your org.</b></li>
+                </ul>
+            </div>
+            
+            <div class="slds-grid slds-grid_vertical slds-m-bottom_large">
+                <div class="slds-text-heading_medium slds-m-bottom_large">
+                    <strong>Following records will be Deleted:</strong>
+                </div>
+                <ul class="slds-list_dotted">
+                    <li>Business Group, Accounts, Contacts, GL Codes, Tax Locale</li>
+                    <li>Item Class, Items, Package Item, Price Rules and Price Rule Variables</li>
+                    <li>Renewal Path, Renewal Path Variables</li>
+                    <li>Catalog, Catalog Item</li>
+                    <li>Badge Type, Badge Workflow, Badge</li>
+                    <li>Payment Terms, Source Code, Tax Locale, Access Permissions</li>
+                    <li>Subscription, Subscription Line, Subscriber/Assignments, Terms (Renewal), Subscription Plan, Assignment Role, Item Subscription Plan</li>
+                    <li>Sales Order, Sales Order Line, Invoice, Invoice Lines, Receipt, Receipt Lines, Payment Method, Transactions, Transaction Line, Batch, ePayment, ePayment Line, Scheduled Payment, Shipping Region</li>
+                    <li>Event Category, Events, Event Status, Event Status Page, Section, Section Ticket, Ticket Type, Attendee, Schedule Item, Registration Item, Registration Group, Vendor, Venue, Speaker, Sponsor, Section, Waitlist Entry, Site Event Category</li>
+                	<li>Community Group, Community Group Member</li>
+                    <li>Forms, Field, Field Group, Field Response, Form, Form Response</li>
+                    <li>Directories, Site Directory, Member Directory</li>
+                	<li>Programs, Program, Program  Goal, Program Profile, Program Term, Program Type</li>
+                    <li>Campaign Page</li>
+                </ul>
+            </div>
+            <aura:if isTrue="{!!v.isOrgId}">
+                <div class="slds-p-around_small slds-text-align_center slds-m-bottom_large">
+                    <lightning:button variant="destructive" onclick="{!c.openModal}">Delete Test Data</lightning:button> 
+                </div>
+            </aura:if>
+        </div>
+
+        <!-- MODAL -->
+        <div class="slds-modal" aura:id="modal">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <button class="slds-button slds-modal__close slds-button_icon-inverse" title="Close" onclick="{!c.closeModal}"> 
+                        <lightning:icon iconName="utility:close" size="medium"/>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 class="slds-text-heading_medium slds-hyphenate"><b>Are You Sure?</b></h2>
+                </div>
+                <div class="slds-modal__content slds-p-around_medium">
+                    <h3 class="slds-text-heading_medium slds-hyphenate" style="font:page-header-title-font-weight;">
+                        This will delete all the test data created including setup objects. Do you want to proceed ?</h3>
+                </div>
+                <div class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick="{!c.closeModal}">Cancel</button>
+
+                    <Framework:Button onClickAction="{!c.cleanData}"
+                                      type="destructive"
+                                      label="Yes, Delete All Test Data!"
+                                      aura:id="cleanDataBtn"/>
+                </div>
+            </div>
+        </div>
+        <!-- MODAL -->
+
+        <div class="slds-backdrop slds-backdrop" aura:id="backdrop"></div>
+
+        <Framework:Toast aura:id="toastMessages"/>
+    </div>
+
+</aura:component>

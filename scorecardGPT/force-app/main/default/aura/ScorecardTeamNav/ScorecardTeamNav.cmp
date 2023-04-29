@@ -1,0 +1,331 @@
+<aura:component controller="ScorecardTeamNavController" implements="lightning:isUrlAddressable,forceCommunity:availableForAllPageTypes" access="global">
+    
+    <aura:attribute name="scorecardId" type="string"></aura:attribute>
+    <aura:attribute name="currentuserId" type="string"></aura:attribute>
+    <aura:attribute name="members" type="list"></aura:attribute>
+    <aura:attribute name="visible" type="Boolean" default="false" />
+    <aura:attribute name="isOpen" type="Boolean" default="false" />
+    <aura:attribute name="ListSection" type="List" />
+    <aura:attribute name="CourseOverviewAndInformation" type="boolean" />
+    <aura:attribute name="CourseTechnologyAndTool" type="boolean" />
+    <aura:attribute name="DesignAndLayout" type="boolean" />
+    <aura:attribute name="ContentAndActivities" type="boolean" />
+    <aura:attribute name="Interaction" type="boolean" />
+    <aura:attribute name="AssessmentAndFeedback" type="boolean" />
+    <aura:attribute name="cancelInvite" type="Boolean" default="false" />
+    <aura:attribute name="AcceptInvite" type="Boolean" default="false" />
+    <aura:attribute name="DeclineInvite" type="Boolean" default="false" />
+    <aura:attribute name="editEmail" type="Boolean" default="true" />
+    <aura:attribute name="editButton" type="Boolean" default="true" />
+    <aura:registerEvent name="showToast" type="force:showToast" />
+    <aura:handler name="init" value="{!this}" action="{!c.onInit}" />
+    <aura:handler name="change" value="{!v.scorecardId}" action="{!c.onInit}" />
+    <aura:attribute name="Role" type="string"/>
+    <aura:attribute name="Invitations" type="Invitation__c[]"></aura:attribute>
+    <aura:attribute name="InvitationDetail" type="Invitation__c[]"></aura:attribute>
+    <aura:attribute name="UserEmail" type="Scorecard_User__c"/>
+    
+    
+    
+    <div class="slds" style="width:350px;">
+        <article class="slds-card">
+            <aura:if isTrue="{!v.visible}">
+                   <div class="slds-text-heading_large slds-text-align_center team-title">Collaborators</div>
+
+                <aura:if isTrue="{!or(v.Role == 'Author',v.Role == 'Lead Reviewer')}">
+                    <div class ="popup" style="text-align: center">
+                        <c:CreateInvitationCmp scorecardId="{!v.scorecardId}"/>
+                    </div>
+                    
+                    <div class="slds-grid" >
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                            <thead>
+                                <tr class="slds-line-height_reset" >
+                                    <th class="" scope="col">
+                                        <div class="slds-truncate" title="Member Name">Name</div>
+                                    </th>
+                                    <th class="" scope="col">
+                                        <div class="slds-truncate" title="Designation">Designation</div>
+                                    </th>
+                                    <th class="" scope="col">
+                                        <div class="slds-truncate" title="Designation">Remove</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <aura:iteration items="{!v.members}" var="member">
+                                    <tr class="slds-hint-parent">
+                                        <th data-label="Member Name" scope="row">
+                                            <div class="slds-truncate" title="{!member.role}">
+                                                <a href="javascript:void(0);" tabindex="-1">{!member.name}</a>
+                                            </div>
+                                        </th>
+                                        <td data-label="Score">
+                                            <div class="slds-truncate" title="{!member.role}">{!member.role}</div>
+                                        </td>
+                                        <aura:if isTrue="{!(member.id==v.currentuserId)}">
+                                            <td data-label="Score">
+                                            </td>
+                                            <aura:set attribute="else">
+                                                <td data-label="Score">
+                                                    <lightning:button variant="base" label="❌" onclick="{!c.removeMember}" value="{!member.id}"/>
+                                                </td>
+                                            </aura:set>
+                                        </aura:if> 
+                                    </tr>
+                                </aura:iteration>
+                            </tbody>
+                        </table>
+                    </div>
+                </aura:if>
+                <aura:if isTrue="{!and(v.Role != 'Author',v.Role != 'Lead Reviewer')}">
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Member Name">Name</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Designation">Designation</div>
+                                </th>
+                                <!--<th class="" scope="col">
+                            <div class="slds-truncate" title="Designation">Deactivate</div>
+                        </th>-->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <aura:iteration items="{!v.members}" var="member">
+                                <tr class="slds-hint-parent">
+                                    <th data-label="Member Name" scope="row">
+                                        <div class="slds-truncate" title="{!member.role}">
+                                            <a href="javascript:void(0);" tabindex="-1">{!member.name}</a>
+                                        </div>
+                                    </th>
+                                    <td data-label="Score">
+                                        <div class="slds-truncate" title="{!member.role}">{!member.role}</div>
+                                    </td>
+                                    <!--<td data-label="Score">
+                                <lightning:button variant="base" label="❌" onclick="{!c.removeMember}" value="{!member.id}"/>
+                            </td>-->
+                                </tr>
+                                </aura:iteration>
+                        </tbody>
+                    </table>
+                </aura:if>
+            </aura:if>
+            <aura:if isTrue="{!(v.Role == 'Author')}">
+             <div class="slds-text-heading_large slds-text-align_center team-title">Invitations</div>
+                <div class="slds-grid">
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Member Name">
+                                        Name
+                                    </div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Designation">Status</div>
+                                </th>
+                                <!--  <th class="" scope="col">
+                                <div class="slds-truncate" title="Designation">Invited By</div>
+                            </th> -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <aura:iteration items="{!v.Invitations}" var="invite">
+                                <tr class="slds-hint-parent">
+                                    <td data-label="Score">
+                                        <div class="slds-truncate" >
+                                            <!--  <a href="{!'/scorecards/s/detail/'+invite.Id}">
+                                        {!invite.First_Name__c}&nbsp;{!invite.Last_Name__c}
+                                        </a> -->
+                                            <a onclick="{!c.openInvitationDetail}" id="{!invite.Id}">
+                                                {!invite.First_Name__c}&nbsp;{!invite.Last_Name__c}
+                                            </a>
+                                        </div>
+                                    </td>
+                                    
+                                    <td data-label="Score">
+                                        <div class="slds-truncate"> {!invite.Status__c} </div>
+                                    </td>
+                                    <!--    <td data-label="Score">
+                                    <div class="slds-truncate"> {!invite.CreatedBy.Name} </div>
+                                </td> -->
+                                </tr>
+                                
+                            </aura:iteration>
+                            
+                        </tbody>
+                        
+                    </table>
+                    
+                </div>
+                </aura:if>
+            
+        </article>
+        
+    </div>
+    
+    <!-- Invitation Detail Model -->
+    
+    <aura:if isTrue="{!v.isOpen}">
+        
+        <!--###### MODAL BOX Start######--> 
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- ###### MODAL BOX HEADER Start ######-->
+                <header class="slds-modal__header">
+                    <lightning:buttonIcon iconName="utility:close"
+                                          onclick="{! c.closeModel }"
+                                          alternativeText="close"
+                                          variant="bare-inverse"
+                                          class="slds-modal__close"/>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Invitation Detail</h2>
+                    <!--  <button class="slds-button slds-button_Inverse slds-align_absolute-right" onclick="{!c.ResendInvite}">Resend Invitation</button> -->
+                    
+                </header>
+                
+                <!--###### MODAL BOX BODY Part Start######-->
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <nav role="navigation" aria-label="Breadcrumbs">
+                        <ol class="slds-breadcrumb slds-list_horizontal slds-wrap">
+                            <li class="slds-breadcrumb__item">
+                                <a href="{! 'scorecard-section?scorecard=' + v.scorecardId }">{!v.InvitationDetail[0].Scorecard__r.Title__c}</a>
+                            </li>
+                            <li class="slds-breadcrumb__item">
+                                <p class="slds-m-left--x-small">{!v.InvitationDetail[0].Name}</p>
+                            </li>
+                        </ol>
+                        <div align="right">
+                            <aura:if isTrue="{!v.editButton}">
+                                Edit
+                                <lightning:buttonIcon iconName="utility:edit" size="xx-large"  variant="base" onclick="{!c.edit}" />
+                                
+                                <aura:set Attribute="else">
+                                    Close
+                                    <lightning:buttonIcon iconName="utility:close" size="xx-large"  variant="base" onclick="{!c.editclose}" />
+                                </aura:set>
+                            </aura:if>
+                        </div>
+                        
+                    </nav>
+                    <br></br>
+                    <div class="slds-grid slds-grid_vertical">
+                        <!--  <div class="slds-col">
+                            <p style="font-size:15px"> <b><span>First Name : </span></b>{!v.InvitationDetail[0].First_Name__c}</p>
+                        </div> -->
+                        <div class="slds-col">
+                            <aura:if isTrue="{!v.editEmail}">
+                                <p style="font-size:15px"> <b><span>Role : </span></b>{!v.InvitationDetail[0].Role__c} &nbsp; </p>  
+                                
+                                <aura:set Attribute="else">
+                                    <p style="font-size:15px"> <b><span>Role : </span></b></p>
+                                    <!-- <lightning:input value="{!v.InvitationDetail[0].Role__c}"></lightning:input> -->
+                                    <lightning:select value="{!v.InvitationDetail[0].Role__c}">
+                                        <option value="Author">Author</option>
+                                        <option value="Co-Author">Co-Author</option>
+                                        <option value="Observer">Observer</option>
+                                    </lightning:select>
+                                    <br></br>
+                                    <aura:if isTrue="{!v.InvitationDetail[0].Role__c == 'Co-Author'}">
+                                        <p style="font-size:15px"> <b><span>Section Permission :</span></b></p>
+                                        <aura:iteration items="{!v.ListSection}" var="section" indexVar="indx"> 
+                                            <div class="slds-grid slds-grid_horizontal">
+                                                <ui:inputCheckbox aura:id="checkSection" value="" text="{!section.Title__c}" /> {!section.Title__c}
+                                            </div>
+                                        </aura:iteration>
+                                        <aura:set Attribute="else">
+                                            <lightning:outputField  aura:id="checkSection" value="None"></lightning:outputField>
+                                        </aura:set>
+                                    </aura:if>
+                                    
+                                    
+                                    
+                                </aura:set>
+                                
+                            </aura:if>
+                        </div>
+                        <br></br>
+                        <div class="slds-col">
+                            
+                            <aura:if isTrue="{!v.editEmail}">
+                                <p style="font-size:15px"> <b><span>First Name : </span></b>{!v.InvitationDetail[0].First_Name__c} &nbsp; </p>  
+                                
+                                <aura:set Attribute="else">
+                                    <p style="font-size:15px"> <b><span>First Name : </span></b></p>
+                                    <lightning:input value="{!v.InvitationDetail[0].First_Name__c}"></lightning:input>
+                                </aura:set>
+                            </aura:if>
+                        </div>
+                        <br></br>
+                        
+                        <div class="slds-col">
+                            <aura:if isTrue="{!v.editEmail}">
+                                <p style="font-size:15px"> <b><span>Last Name : </span></b>{!v.InvitationDetail[0].Last_Name__c} &nbsp; </p>  
+                                
+                                <aura:set Attribute="else">
+                                    <p style="font-size:15px"> <b><span>Last Name : </span></b></p>
+                                    <lightning:input value="{!v.InvitationDetail[0].Last_Name__c}"></lightning:input>
+                                </aura:set>
+                            </aura:if>
+                        </div>
+                        <br></br>
+                        
+                        <div class="slds-col">
+                            <aura:if isTrue="{!v.editEmail}">
+                                <p style="font-size:15px"> <b><span>Email : </span></b>{!v.InvitationDetail[0].Email__c} &nbsp; </p>  
+                                
+                                <aura:set Attribute="else">
+                                    <p style="font-size:15px"> <b><span>Email : </span></b></p>
+                                    <lightning:input value="{!v.InvitationDetail[0].Email__c}"></lightning:input>
+                                </aura:set>
+                            </aura:if>
+                        </div>
+                        <br></br>
+                        <div class="slds-col">
+                            <p style="font-size:15px"> <b><span>Invited By : </span></b>{!v.InvitationDetail[0].CreatedBy.Name}</p>
+                        </div>
+                    </div>
+                </div>
+                <footer class="slds-modal__footer">
+                    <aura:if isTrue="{!v.cancelInvite == false}">
+                        <button class="slds-button slds-button_brand" onclick="{!c.cancelInvite}">Cancel Invitation</button>
+                    </aura:if>
+                    <aura:if isTrue="{!v.cancelInvite}">
+                        <c:CancelInvitationCMP recordId="{!v.InvitationDetail[0].Id}"/>
+                    </aura:if>
+                    <!-- <aura:if isTrue="{!(v.UserEmail.Scorecard_User_Email_Address__c == v.InvitationDetail[0].Email__c)}"> -->
+                    <!-- <aura:if isTrue="{!v.AcceptInvite == false}">
+                    <button class="slds-button slds-button_brand" onclick="{!c.AcceptInvite}">Accept Invitation</button>
+                    </aura:if>
+                        <aura:if isTrue="{!v.AcceptInvite}">
+                    <c:AcceptInvitationCMP recordId="{!v.InvitationDetail[0].Id}"/>
+                        </aura:if> -->
+                    <!-- </aura:if> -->
+                    <!--  <aura:if isTrue="{!v.DeclineInvite == false}">
+                    <button class="slds-button slds-button_brand" onclick="{!c.DeclineInvite}">Decline Invitation</button>
+                    </aura:if>
+                        <aura:if isTrue="{!v.DeclineInvite}">
+                    <c:declineInvitationCMP recordId="{!v.InvitationDetail[0].Id}"/>
+                        </aura:if> -->
+                    
+                    
+                    <aura:if isTrue="{!v.editEmail}">
+                        <button class="slds-button slds-button_brand" onclick="{!c.ResendInvite}"> Resend Invitation</button>
+                        <aura:set Attribute="else">
+                            <button class="slds-button slds-button_brand" onclick="{!c.SaveResendInvite}">Save And Resend Invitation</button>
+                        </aura:set>
+                    </aura:if>
+                </footer>
+                <!--###### MODAL BOX BODY Part Close######-->
+                
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+        <!--###### MODAL BOX Part END Here ######-->
+    </aura:if>
+    
+    <!-- Invitation Details Model Close -->
+    
+</aura:component>

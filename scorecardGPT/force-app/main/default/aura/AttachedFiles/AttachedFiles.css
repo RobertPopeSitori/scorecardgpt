@@ -1,0 +1,24 @@
+.THIS .hide {
+    display: none;
+}
+
+.THIS .hidden{
+    display: none;
+}
+
+.THIS .padded15{
+    padding-left: 15px;
+}
+
+.THIS .height60{
+    height: 60px;
+}
+
+.THIS .rightAligned{
+    text-align: right;
+}
+
+.THIS .olc-truncate {
+	overflow: hidden; 
+	text-overflow: ellipsis;
+}

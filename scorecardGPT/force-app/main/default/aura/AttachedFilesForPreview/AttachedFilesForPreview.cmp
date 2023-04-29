@@ -1,0 +1,83 @@
+<aura:component controller="AttachedFilesController" implements="force:hasRecordId,force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global">
+    
+    <aura:attribute name="recordType" type="string" default="Scorecard__c"/>
+    <aura:attribute name="recordId" type="string"/>
+    <aura:attribute name="title" type="string" default="Scorecard Files"/>
+    <aura:attribute name="selectedFileId" type="string" />
+    <aura:attribute name="selectedFileName" type="string" />
+    <aura:attribute name="actionUrl" type="string" default=""/>
+    <aura:attribute name="showModal" type="boolean" default="false" />
+    <aura:attribute name="showDeleteModal" type="boolean" default="false" />
+    <aura:attribute name="isLoading" type="boolean" default="false" />
+    <aura:attribute name="attachedFiles" type="List" />
+    <aura:attribute name="fileName" type="string" />
+    <aura:attribute name="fileSize" type="integer" />
+    <aura:attribute name="numberOfFiles" type="integer" default="0"/>
+    <aura:attribute name="canAddFiles" type="boolean" default="true" />
+    <aura:attribute name="canRemoveFiles" type="boolean" default="true" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.onInit}" />
+    <aura:handler name="change" value="{!v.recordId}" action="{!c.onInit}"/>
+    
+    <article class="slds-card  related_list_card_border_top forceRelatedListCardDesktop">
+       
+        <div class="slds-card__body">
+           <b> Submitted Files</b>
+            <div class="previewMode MEDIUM forceRelatedListPreview">
+                <div class="useHeaderBarFix forceBaseListView forceRelatedListPreviewGrid">
+                    <div class="spinnerWrapper hideSpinner hideEl forceComponentSpinner">
+                        <div class="indicator  hideEl forceInlineSpinner" aria-hidden="true" role="alert"/>
+                    </div>
+                    <div class="hidden forceListViewPlaceholder"/>
+                    <div class="listViewContent">
+                        <div class="scrollable uiScroller scroller-wrapper scroll-bidirectional native" tabindex="-1">
+                            <div class="scroller actionBarPlugin fixedHeaderPlugin">
+                                <table class="forceRecordLayout slds-table slds-no-row-hover slds-table_cell-buffer slds-table_fixed-layout uiVirtualDataGrid--default uiVirtualDataGrid">
+                                   <aura:if isTrue="{!not(empty(v.attachedFiles))}">
+                                    <thead>
+                                        <tr>
+                                            <th class="initialSortAsc " scope="col" title="Name" aria-label="Name">File Name<span class="assistiveText"/></th>
+                                            <th class="initialSortAsc" scope="col" title="File Size" aria-label="File Size">File Size<span class="assistiveText"/></th>
+                                            <th class="initialSortAsc" scope="col" title="Uploaded By" aria-label="Order">Uploaded By<span class="assistiveText"/></th>
+                                            <th class="initialSortAsc" scope="col" title="Upload Date" aria-label="Order">Upload Date<span class="assistiveText"/></th>
+                                            <th class="initialSortAsc" scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    </aura:if>
+                                    <tfoot/>
+                                    <tbody>
+                                        <aura:iteration items="{!v.attachedFiles}" var="file">
+                                            <tr>
+                                                <td class="olc-truncate" style="white-space: nowrap; width: 100px;  overflow: hidden;text-overflow:ellipsis;">
+                                                    <a href="{!file.bucketUrl + file.fileId + '/' + file.fileName}" target="_s3" title="{!file.fileName}" >
+                                                        <span class="slds-truncate">{!file.fileName}</span>
+                                                    </a>
+                                                </td>
+                                                <td><span class="uiOutputText" data-aura-class="uiOutputText" title="{!file.fileSize}">{!file.fileSize}</span></td>
+                                                <td><!--<a class="textUnderline outputLookupLink slds-truncate forceOutputLookup" href="{!file.createdByUrl}"> -->{!file.createdBy}<!--</a>--></td>
+                                                <td><span class="uiOutputNumber">{!file.uploadDate}</span></td>
+                                              <!--  <td class="rightAligned">
+                                                    <a href="{!file.bucketUrl + file.fileId + '/' + file.fileName}" target="_s3">
+                                                        <lightning:buttonIcon iconName="utility:download"  variant="border-filled" alternativeText="Download" />
+                                                    </a>
+                                                    <aura:if isTrue="{!v.canRemoveFiles}">
+                                                        <span id="{!file.fileId}" onclick="{!c.onFileDelete}">
+                                                            <lightning:buttonIcon iconName="utility:delete"  variant="border-filled" alternativeText="Delete" />
+                                                        </span>
+                                                    </aura:if>
+                                                </td> -->
+                                            </tr>
+                                        </aura:iteration>
+                                        <aura:if isTrue="{!(empty(v.attachedFiles))}">
+                                          <center> <b> No Uploaded Files Available</b> </center>
+                                        </aura:if>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+</aura:component>

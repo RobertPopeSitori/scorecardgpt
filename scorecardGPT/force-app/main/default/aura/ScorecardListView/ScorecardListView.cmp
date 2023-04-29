@@ -1,0 +1,94 @@
+<aura:component controller="ScorecardListViewController" implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global">
+
+	<aura:attribute name="scorecards" type="List" />
+	<aura:attribute name="isLoading" type="Boolean" default="false" />
+	<aura:handler name="init" value="{!this}" action="{!c.onInit}" />
+    <lightning:breadcrumbs>
+        <lightning:breadcrumb label="Home" href="/OLC/s/"/>
+        <lightning:breadcrumb label="My Scorecard" href="/OLC/s/scorecardapp"/>
+    </lightning:breadcrumbs>
+    <c:CreateScorecardModal/>
+	<div class="slds">
+		<table class="slds-table slds-table_cell-buffer slds-table_bordered">
+		    <thead>
+			 <tr
+			   class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped"
+			   role="grid">
+			   <th class="" scope="col">
+				<div class="slds-truncate" title="Scorecard Title">
+				  Scorecard Title
+				</div>
+			   </th>
+			   <th class="" scope="col">
+				<div class="slds-truncate" title="Type">Type</div>
+			   </th>
+			   <th class="" scope="col">
+				<div class="slds-truncate" title="Owner">Owner</div>
+			   </th>
+			   <th class="" scope="col">
+				<div class="slds-truncate" title="Organization">
+				  Organization
+				</div>
+			   </th>
+			   <th class="" scope="col">
+				<div class="slds-truncate" title="Created">Created</div>
+			   </th>
+			   <th class="" scope="col">
+				<div class="slds-truncate" title="Status">Status</div>
+			   </th>
+			   <th class="" scope="col">
+				<div class="slds-truncate" title="Actions">Actions</div>
+			   </th>
+			 </tr>
+		    </thead>
+		    <tbody>
+			   <aura:iteration items="{!v.scorecards}" var="scorecard">
+				  <tr class="slds-hint-parent">
+					 <th data-label="Scorecard Title" scope="row">
+						<div class="slds-truncate" title="Title">
+						    <a href="{! 'scorecard-section?scorecard=' + scorecard.id }" tabindex="-1">
+						    {!scorecard.title}
+						    </a>
+						</div>
+					 </th>
+					 <td data-label="Account Name">
+					   <div class="slds-truncate" title="Type">
+						{!scorecard.type}
+					   </div>
+					 </td>
+					 <td data-label="Close Date">
+					   <div class="slds-truncate" title="Owner">
+						{!scorecard.owner}
+					   </div>
+					 </td>
+					 <td data-label="Prospecting">
+					   <div class="slds-truncate" title="Org">
+						{!scorecard.account}
+					   </div>
+					 </td>
+					 <td data-label="Confidence">
+					   <div class="slds-truncate" title="Created">
+						{!scorecard.createdDate}
+					   </div>
+					 </td>
+					 <td data-label="Amount">
+					   <div class="slds-truncate" title="Status">
+						{!scorecard.status}
+					   </div> 
+					 </td>
+					 <td data-label="Actions">
+					   <div class="slds-button-group" role="group">
+						<a href="{! 'scorecard-section?scorecard=' + scorecard.id }"><lightning:buttonIcon iconName="utility:preview" title="Open" alternativeText="Open"/></a>
+						<!--
+						<lightning:buttonIcon iconName="utility:edit" title="Edit" alternativeText="Edit"/>
+						<lightning:buttonIcon iconName="utility:delete" title="Delete" alternativeText="Delete"/>
+						-->
+					   </div>
+        
+					 </td>
+				    </tr>
+			   </aura:iteration>
+		    </tbody>
+		  </table>	
+	</div>
+</aura:component>

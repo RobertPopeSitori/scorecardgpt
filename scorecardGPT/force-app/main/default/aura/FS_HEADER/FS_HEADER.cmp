@@ -1,0 +1,633 @@
+<aura:component
+  implements="forceCommunity:availableForAllPageTypes"
+  access="global"
+>
+  <ltng:require
+    styles="{!join(',',$Resource.main, $Resource.fontawesome_css)}"
+    scripts=""
+    afterScriptsLoaded="{!c.scriptsLoaded}"
+  />
+  <!-- {!$Resource.addthis}  -->
+  <ltng:require scripts="{!$Resource.GoogleAnalytics}" />
+
+  <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+  <aura:attribute name="showLogout" type="boolean" default="true" />
+
+  <header
+    class="banner navbar navbar-default navbar-static-top"
+    role="banner"
+    id="header"
+  >
+    <!-- The social media icon bar -->
+    <!--<div class="icon-bar">
+            <a href="#" onclick="{!c.getUrlFB}" class="facebook"><i class="fa fa-facebook"></i></a> 
+            <a href="#" class="twitter" onclick="{!c.getUrlTwitter}"><i class="fa fa-twitter"></i></a> 
+            <a href="#" class="linkedin" onclick="{!c.getUrlLinkedin}"><i class="fa fa-linkedin"></i></a>
+            <a href="#" class="print" onclick="{!c.callPrint}"><i class="fa fa-print"></i></a> 
+            <a href="mailto:?subject=Online Learning Consortium (OLC) - Enhancing Online Education" class="envelope"><i class="fa fa-envelope"></i></a>
+             
+        </div>-->
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="top-links-container hidden-xs ">
+            <div class="row">
+              <div class="col-lg-5 social-icons visible-lg"> </div>
+              <div
+                class="col-lg-7 col-md-12 col-sm-12 top-nav-right-container well-sm"
+              >
+                <ul id="menu-top-nav-right-links" class="menu top-nav-right">
+                  <li class="menu-8167">
+                    <a href="https://onlinelearningconsortium.org/support/"
+                      >Support</a
+                    >
+                  </li>
+                  <li class="menu"> <a href="/s/store">Store</a> </li>
+                  <li class="menu">
+                    <a href="https://onlinelearningconsortium.org/institute-schedule"
+                      >Events</a
+                    >
+                  </li>
+                  <aura:if isTrue="{!v.showLogout}">
+                    <li class="menu">
+                      <a href="/s/#/profile/my_info">Account</a>
+                    </li>
+                    <li class="menu-login">
+                      <a href="/secur/logout.jsp?retUrl=/OLC/s/login/"
+                        >Logout</a
+                      >
+                    </li>
+                    <aura:set attribute="else">
+                      <li class="menu-login">
+                        <a
+                          href="https://my.onlinelearningconsortium.org/s/login/"
+                          >Login</a
+                        >
+                      </li>
+                    </aura:set>
+                  </aura:if>
+                  <!-- <li class="menu-search">
+                                        <a href="https://onlinelearningconsortium.org/">
+                                            <span class="moon-search-3">
+                                                <em>search</em>
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="menu-cart">
+                                        <a href="https://onlinelearningconsortium.org/cart">
+                                            <span class="moon-cart">
+                                                <em>cart</em>
+                                            </span>
+                                        </a>
+                                    </li> -->
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="navbar-container">
+            <div class="navbar-header">
+              <button
+                type="button"
+                class="navbar-toggle"
+                data-toggle="collapse"
+                data-target=".navbar-collapse"
+              >
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span> <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a
+                class="navbar-brand"
+                href="https://onlinelearningconsortium.org/"
+              >
+                <span>
+                  <img
+                    src="https://onlinelearningconsortium.org/wp-content/themes/olc/assets/img/logo.png"
+                  />
+                </span>
+              </a>
+            </div>
+            <nav class="collapse navbar-collapse" role="navigation">
+              <ul id="menu-menu-a" class="nav navbar-nav">
+                <li class="active menu-home">
+                  <a href="https://onlinelearningconsortium.org/">Home</a>
+                </li>
+                <li class="dropdown menu-attend">
+                  <a
+                    class="dropdown-toggle"
+                    data-target="#"
+                    href="https://onlinelearningconsortium.org/attend-2020/"
+                    >Attend <b class="caret"></b>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li class="menu-olc-collaborate-regional-events">
+                      <a
+                        href="https://onlinelearningconsortium.org/collaborate-overview/"
+                        >OLC Collaborate – Regional Events</a
+                      >
+                    </li>
+                    <li class="menu-olc-innovate-2020">
+                      <a
+                        href="https://onlinelearningconsortium.org/attend-2020/innovate/"
+                        >OLC Innovate 2020</a
+                      >
+                    </li>
+                    <li class="menu-olc-accelerate-2020">
+                      <a
+                        href="https://onlinelearningconsortium.org/attend-2020/accelerate/"
+                        >OLC Accelerate 2020</a
+                      >
+                    </li>
+                    <li class="menu-which-conference-should-i-attend">
+                      <a
+                        href="https://onlinelearningconsortium.org/which-conference-to-attend/"
+                        >Which Conference Should I Attend?</a
+                      >
+                    </li>
+                    <li
+                      class="menu-how-to-justify-attendance-at-an-olc-conference-sample-letter"
+                    >
+                      <a
+                        href="https://onlinelearningconsortium.org/how-to-get-approval-from-your-boss-or-manager-to-attend-an-olc-conference/"
+                        >How to Justify Attendance at an OLC Conference – Sample
+                        Letter</a
+                      >
+                    </li>
+                    <li class="menu-olc-past-events">
+                      <a
+                        href="https://onlinelearningconsortium.org/attend-2017/olc-past-events/"
+                        >OLC Past Events</a
+                      >
+                    </li>
+                    <li class="menu-revisit-olc-accelerate-2019">
+                      <a
+                        href="https://onlinelearningconsortium.org/attend-2019/accelerate/olc-accelerate-2019-post-conference-highlights/"
+                        >– Revisit OLC Accelerate 2019</a
+                      >
+                    </li>
+                    <li class="menu-revisit-olc-innovate-2019">
+                      <a
+                        href="https://onlinelearningconsortium.org/attend-2019/innovate/post-conference-highlights/"
+                        >– Revisit OLC Innovate 2019</a
+                      >
+                    </li>
+                    <li class="menu-press-pass">
+                      <a
+                        href="https://onlinelearningconsortium.org/attend-2019/press-passes/"
+                        >Press Pass</a
+                      >
+                    </li>
+                  </ul>
+                </li>
+                <li class="dropdown menu-learn">
+                  <a
+                    class="dropdown-toggle"
+                    data-target="#"
+                    href="https://onlinelearningconsortium.org/learn/"
+                    >Learn <b class="caret"></b>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li
+                      class="menu-the-olc-institute-for-professional-development"
+                      ><a
+                        href="https://onlinelearningconsortium.org/learn/olc-institute-professional-development/"
+                        >The OLC Institute for Professional Development</a
+                      ></li
+                    >
+                    <li class="menu-institute-schedule"
+                      ><a
+                        href="https://onlinelearningconsortium.org/institute-schedule"
+                        >Institute Schedule</a
+                      ></li
+                    >
+                    <li class="menu-whats-new-in-2020"
+                      ><a
+                        href="https://onlinelearningconsortium.org/learn/whats-new-in-2020/"
+                        >What’s New in 2020?</a
+                      ></li
+                    >
+                    <li class="menu-online-teaching-certificate-programs"
+                      ><a
+                        href="https://onlinelearningconsortium.org/learn/teaching-certificates/"
+                        >— Online Teaching Certificate Programs</a
+                      ></li
+                    >
+                    <li class="menu-save-on-certificate-programs"
+                      ><a
+                        href="https://onlinelearningconsortium.org/learn/online-teaching-certificate-pass/"
+                        >— Save on Certificate Programs!</a
+                      ></li
+                    >
+                    <li class="menu-instructional-designer-programs-courses"
+                      ><a
+                        href="https://onlinelearningconsortium.org/learn/programs-and-courses-for-the-instructional-designer/"
+                        >— Instructional Designer Programs &amp; Courses</a
+                      ></li
+                    >
+                    <li class="menu-mastery-series"
+                      ><a
+                        href="https://onlinelearningconsortium.org/learn/mastery-series/"
+                        >— Mastery Series</a
+                      ></li
+                    >
+                    <li class="menu-workshops"
+                      ><a
+                        href="https://onlinelearningconsortium.org/learn/workshops/"
+                        >— Workshops</a
+                      ></li
+                    >
+                    <li class="menu-save-on-workshops"
+                      ><a
+                        href="https://onlinelearningconsortium.org/learn/olc-workshop-pass/"
+                        >— Save on Workshops!</a
+                      ></li
+                    >
+                    <li class="menu-self-paced-workshops"
+                      ><a
+                        href="https://onlinelearningconsortium.org/learn/self-paced-workshops/"
+                        >— Self-Paced Workshops</a
+                      ></li
+                    >
+                    <li class="menu-on-demand-offerings"
+                      ><a
+                        href="https://onlinelearningconsortium.org/learn/on-demand-programs/"
+                        >— On-Demand Offerings</a
+                      ></li
+                    >
+                    <li class="menu-olc-institute-badges"
+                      ><a
+                        href="https://onlinelearningconsortium.org/learn/badges/"
+                        >— OLC Institute Badges</a
+                      ></li
+                    >
+                    <li
+                      class="menu-leadership-in-higher-education-professional-development-resources"
+                      ><a
+                        href="https://onlinelearningconsortium.org/learn/leadership-professional-development-and-resources/"
+                        >Leadership in Higher Education: Professional
+                        Development &amp; Resources</a
+                      ></li
+                    >
+                    <li
+                      class="menu-institute-for-emerging-leadership-in-online-learning-2020-ielol"
+                      ><a
+                        href="https://onlinelearningconsortium.org/learn/ielol/"
+                        >Institute for Emerging Leadership in Online Learning
+                        2020 (IELOL)</a
+                      ></li
+                    >
+                    <li
+                      class="menu-institute-for-emerging-leadership-in-online-learning-2020-ielol-africa"
+                      ><a
+                        href="https://onlinelearningconsortium.org/learn/ielol-sarua/"
+                        >Institute for Emerging Leadership in Online Learning
+                        2020 (IELOL) Africa</a
+                      ></li
+                    >
+                    <li class="menu-webinars"
+                      ><a
+                        href="https://onlinelearningconsortium.org/learn/webinars/"
+                        >Webinars</a
+                      ></li
+                    >
+                  </ul>
+                </li>
+                <li class="dropdown menu-read">
+                  <a
+                    class="dropdown-toggle"
+                    data-target="#"
+                    href="https://onlinelearningconsortium.org/read/"
+                    >Read <b class="caret"></b>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li class="menu-research-center">
+                      <a
+                        href="https://onlinelearningconsortium.org/read/olc-research-center-digital-learning-leadership/"
+                        >Research Center</a
+                      >
+                    </li>
+                    <li class="menu-online-learning-journal">
+                      <a
+                        href="https://onlinelearningconsortium.org/read/olc-online-learning-journal/"
+                        >Online Learning Journal</a
+                      >
+                    </li>
+                    <li class="menu-blog-olc-insights">
+                      <a href="https://onlinelearningconsortium.org/read/blog/"
+                        >Blog OLC Insights</a
+                      >
+                    </li>
+                    <li class="menu-publications">
+                      <a
+                        href="https://onlinelearningconsortium.org/read/book-series/"
+                        >Publications</a
+                      >
+                    </li>
+                    <li class="menu-infographics">
+                      <a
+                        href="https://onlinelearningconsortium.org/read/olc-infographic-higher-education-online-learning-landscape/"
+                        >Infographics</a
+                      >
+                    </li>
+                  </ul>
+                </li>
+                <li class="dropdown menu-consult">
+                  <a
+                    class="dropdown-toggle"
+                    data-target="#"
+                    href="https://onlinelearningconsortium.org/consult/"
+                    >Consult <b class="caret"></b>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li class="menu-quality-scorecard-suite">
+                      <a
+                        href="https://onlinelearningconsortium.org/consult/quality-scorecard/"
+                        >Quality Scorecard Suite</a
+                      >
+                    </li>
+                    <li class="menu-quality-scorecard-navigator">
+                      <a
+                        href="https://onlinelearningconsortium.org/consult/qs-navigator/"
+                        >Quality Scorecard Navigator</a
+                      >
+                    </li>
+                    <li class="menu-olc-quality-scorecard-official-review">
+                      <a
+                        href="https://onlinelearningconsortium.org/consult/olc-quality-scorecard-review/"
+                        >OLC Quality Scorecard Official Review</a
+                      >
+                    </li>
+                    <li class="menu-quality-scorecard-endorsement">
+                      <a
+                        href="https://onlinelearningconsortium.org/consult/online-learning-consortium-quality-scorecard-endorsement/"
+                        >Quality Scorecard Endorsement</a
+                      >
+                    </li>
+
+                    <li class="menu-quality-scorecard-case-studies">
+                      <a
+                        href="https://onlinelearningconsortium.org/consult/quality-scorecard-case-studies/"
+                        >Quality Scorecard Case Studies</a
+                      >
+                    </li>
+                    <li class="menu-consulting-solutions">
+                      <a
+                        href="https://onlinelearningconsortium.org/consult/olc-consulting-solutions/"
+                        >Consulting Solutions</a
+                      >
+                    </li>
+                    <li class="menu-speakers-bureau">
+                      <a
+                        href="https://onlinelearningconsortium.org/consult/speakers-bureau-landing-page/"
+                        >Speakers Bureau</a
+                      >
+                    </li>
+                  </ul>
+                </li>
+                <li class="dropdown menu-get-involved">
+                  <a
+                    class="dropdown-toggle"
+                    data-target="#"
+                    href="https://onlinelearningconsortium.org/get-involved/"
+                    >Get Involved <b class="caret"></b>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li class="menu-current-national-sponsors">
+                      <a
+                        href="https://onlinelearningconsortium.org/get-involved/current-national-sponsors/"
+                        >Current National Sponsors</a
+                      >
+                    </li>
+                    <li class="menu-national-sponsorship-benefits">
+                      <a
+                        href="https://onlinelearningconsortium.org/get-involved/national-sponsor-benefits/"
+                        >National Sponsorship Benefits</a
+                      >
+                    </li>
+                    <li class="menu-volunteer-opportunities">
+                      <a
+                        href="https://onlinelearningconsortium.org/get-involved/"
+                        >Volunteer Opportunities</a
+                      >
+                    </li>
+                  </ul>
+                </li>
+                <li class="dropdown menu-join-olc">
+                  <a
+                    class="dropdown-toggle"
+                    data-target="#"
+                    href="https://onlinelearningconsortium.org/join/"
+                    >Join OLC <b class="caret"></b>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li class="menu-community-membership">
+                      <a href="https://onlinelearningconsortium.org/join/free/"
+                        >Community Membership</a
+                      >
+                    </li>
+                    <li class="menu-professional-membership">
+                      <a
+                        href="https://onlinelearningconsortium.org/join/professional/"
+                        >Professional Membership</a
+                      >
+                    </li>
+                    <li class="menu-institutional-membership">
+                      <a
+                        href="https://onlinelearningconsortium.org/join/institutional/"
+                        >Institutional Membership</a
+                      >
+                    </li>
+                    <li class="menu-member-resources">
+                      <a
+                        href="https://onlinelearningconsortium.org/join/olc-member-resources/"
+                        >Member Resources</a
+                      >
+                    </li>
+                    <li class="menu-comparison-chart">
+                      <a
+                        href="https://onlinelearningconsortium.org/join/member-benefits-comparison-chart/"
+                        >Comparison Chart</a
+                      >
+                    </li>
+                    <li class="menu-our-members">
+                      <a
+                        href="https://onlinelearningconsortium.org/join/meet-our-members/"
+                        >Our Members</a
+                      >
+                    </li>
+                  </ul>
+                </li>
+                <li class="dropdown menu-connect">
+                  <a
+                    class="dropdown-toggle"
+                    data-target="#"
+                    href="https://onlinelearningconsortium.org/connect/"
+                    >Connect <b class="caret"></b>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li class="menu-olc-social-media">
+                      <a
+                        href="https://onlinelearningconsortium.org/connect/social/"
+                        >OLC Social Media</a
+                      >
+                    </li>
+                    <li class="menu-olc-today">
+                      <a
+                        href="https://onlinelearningconsortium.org/connect/newsletter/"
+                        >OLC Today</a
+                      >
+                    </li>
+                    <li class="menu-olc-podcasts">
+                      <a
+                        href="https://onlinelearningconsortium.org/connect/olc-podcast/"
+                        >OLC Podcasts</a
+                      >
+                    </li>
+                    <li class="menu-virtually-inspired">
+                      <a
+                        href="https://onlinelearningconsortium.org/virtually-inspired-showcasing-innovations-online-learning/"
+                        >Virtually Inspired</a
+                      >
+                    </li>
+                  </ul>
+                </li>
+                <li class="dropdown menu-awards">
+                  <a
+                    class="dropdown-toggle"
+                    data-target="#"
+                    href="https://onlinelearningconsortium.org/about/olc-awards/"
+                    >Awards <b class="caret"></b>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li
+                      class="menu-olc-awards-for-excellence-in-online-teaching-research-and-leadership"
+                    >
+                      <a
+                        href="https://onlinelearningconsortium.org/about/olc-awards/"
+                        >OLC Awards for Excellence in Online Teaching, Research
+                        and Leadership</a
+                      >
+                    </li>
+                    <li class="menu-olc-effective-practice-awards">
+                      <a
+                        href="https://onlinelearningconsortium.org/about/olc-awards/effective-practices/"
+                        >OLC Effective Practice Awards</a
+                      >
+                    </li>
+                    <li class="menu-olc-fellows">
+                      <a
+                        href="https://onlinelearningconsortium.org/about/olc-awards/olc-fellows/"
+                        >OLC Fellows</a
+                      >
+                    </li>
+                    <li
+                      class="menu-olc-idea-leadership-in-digital-learning-scholarship"
+                    >
+                      <a
+                        href="https://onlinelearningconsortium.org/about/olc-awards/idea-leadership-digital-learning-scholarship/"
+                        >OLC IDEA Leadership in Digital Learning Scholarship</a
+                      >
+                    </li>
+                    <li class="menu-bruce-n-chaloux-scholarship-fund">
+                      <a
+                        href="https://onlinelearningconsortium.org/about/olc-awards/chaloux-scolarship-fund/"
+                        >Bruce N. Chaloux Scholarship Fund</a
+                      >
+                    </li>
+                  </ul>
+                </li>
+                <li class="dropdown menu-about">
+                  <a
+                    class="dropdown-toggle"
+                    data-target="#"
+                    href="https://onlinelearningconsortium.org/about/"
+                    >About <b class="caret"></b>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li class="menu-olc">
+                      <a
+                        href="https://onlinelearningconsortium.org/about/olc-2/"
+                        >OLC</a
+                      >
+                    </li>
+                    <li class="menu-our-history">
+                      <a
+                        href="https://onlinelearningconsortium.org/about/history/"
+                        >Our History</a
+                      >
+                    </li>
+                    <li class="menu-2018-annual-report">
+                      <a
+                        href="https://onlinelearningconsortium.org/about/2018-annual-report/"
+                        >2018 Annual Report</a
+                      >
+                    </li>
+                    <li class="menu-quality-framework">
+                      <a
+                        href="https://onlinelearningconsortium.org/about/quality-framework-five-pillars/"
+                        >Quality Framework</a
+                      >
+                    </li>
+                    <li class="menu-olc-and-amazonsmile">
+                      <a
+                        href="https://onlinelearningconsortium.org/about/olc-amazon-smile/"
+                        >OLC and AmazonSmile</a
+                      >
+                    </li>
+                    <li class="menu-our-team">
+                      <a
+                        href="https://onlinelearningconsortium.org/executive-leadership-team/"
+                        >Our Team</a
+                      >
+                    </li>
+                    <li class="menu-olc-advisory-council">
+                      <a
+                        href="https://onlinelearningconsortium.org/about/advisory-council/"
+                        >OLC Advisory Council</a
+                      >
+                    </li>
+                    <li class="menu-olc-speaking-engagements">
+                      <a
+                        href="https://onlinelearningconsortium.org/about/olc-speaking-engagements/"
+                        >OLC Speaking Engagements</a
+                      >
+                    </li>
+                    <li class="menu-testimonials">
+                      <a
+                        href="https://onlinelearningconsortium.org/about/customers/"
+                        >Testimonials</a
+                      >
+                    </li>
+                    <li class="menu-in-the-news">
+                      <a
+                        href="https://onlinelearningconsortium.org/about/news-press/1/"
+                        >In the News</a
+                      >
+                    </li>
+                    <li class="menu-careers">
+                      <a
+                        href="https://onlinelearningconsortium.org/about/careers/"
+                        >Careers</a
+                      >
+                    </li>
+                    <li class="menu-advertisers-sponsors">
+                      <a
+                        href="https://onlinelearningconsortium.org/about/olc-2/advertise-olc/"
+                        >Advertisers &amp; Sponsors</a
+                      >
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </nav>
+          </div>
+          <!-- .navbar-container -->
+        </div>
+        <!-- md 12 -->
+      </div>
+      <!-- .row -->
+    </div>
+    <!-- .container -->
+    <div class="breadcrumb-container"></div>
+  </header>
+</aura:component>

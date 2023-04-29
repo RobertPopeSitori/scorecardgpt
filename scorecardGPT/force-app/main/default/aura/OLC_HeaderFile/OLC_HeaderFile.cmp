@@ -1,0 +1,84 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global">
+    <!--<ltng:require styles="{!$Resource.bootstrap4}"/> 
+    <ltng:require scripts="{!$Resource.jquerymin4}"></ltng:require> 
+    <ltng:require scripts="{!$Resource.bootstrapmin4}"></ltng:require>-->
+    <ltng:require afterScriptsLoaded="{!c.scriptsLoaded}"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="showLogout" type="boolean" default="true"/>
+    <aura:attribute name="headerItems" type="object[]"/>
+    
+    <div class="header-section" style="background-color:#f8f9fa;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="topnavlogin">
+                        <div class="header-top-line">
+                            <div class="">
+                                <div class="">
+                                    <nav class="navbar navbar-expand navbar-light bg-light justify-content-end ml-auto">
+                                        <ul class="navbar-nav mb-m15 topnav">
+                                            <li class="nav-item">
+                                                <a href="https://onlinelearningconsortium.org/support/" 
+                                                   class="nav-link">Support</a>
+                                            </li>
+                                            <li class=" nav-item">
+                                                <a href="/OLC/s/store"
+                                                   class="nav-link">Store</a>
+                                            </li>
+                                            <li class=" nav-item">
+                                                <a href="https://onlinelearningconsortium.org/institute-schedule"
+                                                   class="nav-link">Events</a>
+                                            </li>
+                                            <li class=" nav-item inline-flex-nav">
+                                                <aura:if isTrue="{!v.showLogout}" >
+                                                    <a href="/OLC/s/#/profile/my_info"  class="nav-link" style="color:#FFA800;text-transform: uppercase;">Account</a>
+                                                    <a href="/secur/logout.jsp?retUrl=/OLC/s/login/" class="nav-link" style="color:#FFA800;text-transform: uppercase;">Logout</a>
+                                                    
+                                                    <aura:set attribute="else">
+                                                        <a href="/OLC/s/login/"  class="nav-link" style="color:#FFA800;text-transform: uppercase;">Login</a>
+                                                    </aura:set>
+                                                </aura:if>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="logoandnav">
+                        <nav class="navbar navbar-expand-md navbar-light bg-light">
+                            <a class="navbar-brand" href="https://onlinelearningconsortium.org/">
+                                <span>
+                                    <img src="https://onlinelearningconsortium.org/wp-content/themes/olc/assets/img/logo.png"/>
+                                </span>
+                            </a>
+                            <button class="navbar-toggler" onclick="{!c.toggleMenu}" id="navtoggle" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                                <span class="navbar-toggler-icon">☰</span>
+                            </button>
+                            <div class="collapse navbar-collapse justify-content-end ml-auto" id="collapsibleNavbar">
+                                <ul class="navbar-nav mb-m15">
+                                    <aura:iteration items="{!v.headerItems}" var="item">
+                                        <li class="nav-item dropdown">                    
+                                            <a class="nav-link dropdown-toggle" href="{!item.url}" id="navbardrop" data-toggle="dropdown">
+                                                {!item.title} 
+                                                <!--{!item.title}-->
+                                                <ul class="dropdown-menu">
+                                                    <aura:iteration items="{!item.child_items}" var="Citems">
+                                                        <li class="dropdown-item">
+                                                            <a href="{!Citems.url}" >{!Citems.title}</a>
+                                                        </li>
+                                                    </aura:iteration>
+                                                </ul>
+                                            </a>
+                                        </li>
+                                    </aura:iteration>
+                                </ul>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</aura:component>

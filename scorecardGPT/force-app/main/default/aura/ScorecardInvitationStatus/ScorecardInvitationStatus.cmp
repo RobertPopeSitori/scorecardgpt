@@ -1,0 +1,72 @@
+<aura:component controller="scorecardInvitationStatusController" implements="lightning:isUrlAddressable,forceCommunity:availableForAllPageTypes" access="global">
+    
+    <aura:attribute name="isOpen" type="boolean"></aura:attribute>
+    <aura:attribute name="isInvalid" type="boolean"></aura:attribute>
+    <aura:attribute name="scorecard" type="string"></aura:attribute>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="Status" type="boolean"></aura:attribute>
+    <aura:if isTrue="{!v.isOpen}">
+         <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+        <header class="slds-modal__header">
+            
+            <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate"><b>Invalid Scorecard Invite</b></h2>
+            <!--  <button class="slds-button slds-button_Inverse slds-align_absolute-right" onclick="{!c.ResendInvite}">Resend Invitation</button> -->
+            
+        </header>
+        <!--###### MODAL BOX Start######--> 
+       
+                <!-- ###### MODAL BOX HEADER Start ######-->
+                
+                
+                <!--###### MODAL BOX BODY Part Start######-->
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <div class="slds-grid slds-grid_vertical">
+                        <center> <p style="font-size:12px;">It appears you have clicked on an invite that has already been used or canceled. <br></br>
+                            Please reach out to the person who send the invite,or contact customersupport@onlinelearning-c.org</p></center>
+                        <br></br>
+                        <!--###### MODAL BOX BODY Part Close######-->
+                        <lightning:button label="View My Current Scorecards" variant="Brand" onclick="{!c.redirectScorecard}"/> 
+                    </div>
+                    
+                   
+                    
+                </div>
+            </div>
+             
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+    <aura:if isTrue="{!v.isInvalid}">
+         <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+        <header class="slds-modal__header">
+            
+            <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate"><b>Invalid Scorecard Invite</b></h2>
+            <!--  <button class="slds-button slds-button_Inverse slds-align_absolute-right" onclick="{!c.ResendInvite}">Resend Invitation</button> -->
+            
+        </header>
+        <!--###### MODAL BOX Start######--> 
+       
+                <!-- ###### MODAL BOX HEADER Start ######-->
+                
+                
+                <!--###### MODAL BOX BODY Part Start######-->
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <div class="slds-grid slds-grid_vertical">
+                        <center> <p style="font-size:12px;">This User Already Available</p></center>
+                        <br></br>
+                        <!--###### MODAL BOX BODY Part Close######-->
+                        <lightning:button label="View My Current Scorecards" variant="Brand" onclick="{!c.redirectScorecard}"/> 
+                    </div>
+                    
+                   
+                    
+                </div>
+            </div>
+             
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+    
+</aura:component>

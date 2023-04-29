@@ -1,0 +1,356 @@
+<aura:component controller="ScorecardAnswerController" implements="lightning:isUrlAddressable,forceCommunity:availableForAllPageTypes" access="global">
+    
+    <aura:attribute name="Role" type="string"></aura:attribute>
+    <aura:attribute name="AuthAnswer" type="String"></aura:attribute>
+    <aura:attribute name="CompleteAnswer" type="Scorecard_Review__c[]"></aura:attribute>
+    <aura:attribute name="revAnswer" type="List"></aura:attribute>
+    <aura:attribute name="model" type="Object"></aura:attribute>
+    <aura:attribute name="ListSection" type="List" />
+    <aura:attribute name="scorecardId" type="string"></aura:attribute>
+    <aura:attribute name="scorecardName" type="object"></aura:attribute>
+    <aura:attribute name="sectionId" type="string"></aura:attribute>
+    <aura:attribute name="sectionName" type="string"></aura:attribute>
+    <aura:attribute name="questionId" type="string"></aura:attribute>
+    <aura:attribute name="QuestionList" type="List"></aura:attribute>
+    <aura:attribute name="isLoading" type="Boolean" default="true" />
+    <aura:attribute name="opendrop" type="Boolean" default="false" />
+    <aura:attribute name="answer" type="string"></aura:attribute>
+    <aura:attribute name="reviewId" type="string"></aura:attribute>
+    <aura:attribute name="showNotification" type="Boolean" default="false" />
+    <aura:attribute name="notificationType" type="string"></aura:attribute>
+    <aura:attribute name="notificationTitle" type="string"></aura:attribute>
+    <aura:attribute name="openQuestionDropdown" type="Boolean" default="false" />
+    <aura:attribute name="notificationContent" type="string"></aura:attribute>
+    <aura:attribute name="showRubric" type="boolean" default="false"></aura:attribute>
+    <aura:attribute name="selectedRubric" type="integer"></aura:attribute>
+    <aura:attribute name="selectedStatus" type="string"></aura:attribute>
+    <aura:attribute name="redirectUrl" type="string"></aura:attribute>
+    <aura:attribute name="showPreviewModal" type="boolean" default="false"></aura:attribute>
+    <aura:attribute name="showCommentModal" type="boolean" default="false"></aura:attribute>
+    <aura:attribute name="comment" type="string"></aura:attribute>
+    <aura:attribute name="comments" type="List"></aura:attribute>
+    <aura:attribute name="continue" type="boolean" default="false"></aura:attribute>
+    
+    <!-- Aplusify -->
+    <!-- Start -->
+    <aura:attribute name="ScorecardReview" type="Scorecard_Review__c[]"/>
+    <!-- End -->
+    
+    <aura:handler name="init" value="{!this}" action="{!c.onInit}" />
+    <aura:handler name="notificationDismissal" event="c:OnPortalNotificationDismissed" action="{!c.hideNotification}"/>
+    
+    <div class="slds">
+        <c:ScorecardNotification showNotification="{!v.showNotification}" 
+                                 type="{!v.notificationType}" title="{!v.notificationTitle}" 
+                                 content="{!v.notificationContent}"/>
+        
+        <aura:if isTrue="{!v.isLoading}">
+            <lightning:spinner alternativeText="Loading" size="medium" />
+        </aura:if>
+        
+        <c:ScorecardHeader scorecardId="{!v.scorecardId}" />
+        
+        
+        <nav role="navigation" aria-label="Breadcrumbs">
+            
+            <ol class="slds-breadcrumb slds-list_horizontal slds-wrap"> 
+                
+                <!--<li class="slds-dropdown__item" role="presentation">
+                    <a href="/OLC/s/" role="menuitem" tabindex="0">
+                        <span class="slds-truncate" title="Menu Item One">Home</span>
+                    </a>
+                </li>
+                <li class="slds-dropdown__item" role="presentation">
+                    <a href="#" role="menuitem" tabindex="-1">
+                        <span class="slds-truncate" title="Menu Item Two">Scorecards</span>
+                    </a>
+                </li>-->
+                <li class="slds-breadcrumb__item">
+                    <a href="/OLC/s/">Home</a>
+                </li>
+                <li class="slds-breadcrumb__item">
+                    <a href="/OLC/s/scorecardapp">My Scorecards</a>
+                </li>
+                <li class="slds-breadcrumb__item">
+                    <a href="{!'/OLC/s/scorecard-section?scorecard='+v.scorecardId}">{!v.scorecardName.Title__c} </a>
+                </li>
+                <!--  <li class="slds-breadcrumb__item">
+                    <a href="{! 'scorecard-section?scorecard=' + v.scorecardId }">My Sections</a>
+                </li> -->
+                <li class="slds-breadcrumb__item">
+                    <a href="{! 'scorecard-section?scorecard=' + v.scorecardId + '&amp;section=' + v.sectionId }">{!v.sectionName}</a>
+                </li>
+                <!-- Section list Drodown -->
+                <ol class="slds-breadcrumb slds-list_horizontal slds-wrap slds-grid_vertical-align-center">
+                    <li class="slds-breadcrumb__item">
+                        
+                        <div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open">
+                            <aura:if isTrue="{!v.opendrop == false}">
+                                <button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small" aria-haspopup="true" title="Show More" onclick="{!c.openDropdown}">
+                                    <lightning:icon iconName="utility:down" size="xx-small"></lightning:icon>
+                                </button>
+                                <aura:set Attribute="else">
+                                    <button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small" aria-haspopup="true" title="Show More" onclick="{!c.closeDropdown}">
+                                        <lightning:icon iconName="utility:down" size="xx-small"></lightning:icon>
+                                    </button>
+                                </aura:set> 
+                            </aura:if>
+                            <aura:if isTrue="{!v.opendrop}">
+                                
+                                <div class="slds-dropdown slds-dropdown_left slds-dropdown_actions">
+                                    <ul class="slds-dropdown__list" role="menu">
+                                        <aura:iteration items="{!v.ListSection}" var="section" indexVar="indx">
+                                            <li class="slds-dropdown__item" role="presentation">
+                                                <a href="{! 'scorecard-section?scorecard=' + v.scorecardId + '&amp;section=' + section.Id}" role="menuitem" tabindex="0">
+                                                    <span class="slds-truncate" title="{!section.Title__c}">{!section.Title__c}</span>
+                                                </a>
+                                            </li>
+                                        </aura:iteration>
+                                    </ul>
+                                </div>
+                                
+                            </aura:if>
+                        </div>
+                    </li>
+                </ol>
+                <!-- Section list dropdown Close -->
+                <li class="slds-breadcrumb__item">
+                    <a href="{! 'scorecard-section?scorecard=' + v.scorecardId + '&amp;section=' + v.sectionId }"><aura:unescapedHtml value="{!v.model.question}" /></a>
+                </li>
+                <!-- Questionlist Dropdown -->
+                <ol class="slds-breadcrumb slds-list_horizontal slds-wrap slds-grid_vertical-align-center">
+                    <li class="slds-breadcrumb__item">
+                        
+                        <div class="slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open">
+                            <aura:if isTrue="{!v.openQuestionDropdown == false}">
+                                <button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small" aria-haspopup="true" title="Show More" onclick="{!c.openDropdownQuestion}">
+                                    <lightning:icon iconName="utility:down" size="xx-small"></lightning:icon>
+                                </button>
+                                <aura:set Attribute="else">
+                                    <button class="slds-button slds-button_icon slds-button_icon-border-filled slds-button_icon-x-small" aria-haspopup="true" title="Show More" onclick="{!c.closeDropdown}">
+                                        <lightning:icon iconName="utility:down" size="xx-small"></lightning:icon>
+                                    </button>
+                                </aura:set> 
+                            </aura:if>
+                            <aura:if isTrue="{!v.openQuestionDropdown}">
+                                
+                                <div class="slds-dropdown slds-dropdown_left slds-dropdown_actions slds-dropdown_large">
+                                    <ul class="slds-dropdown__list" role="menu">
+                                        <aura:iteration items="{!v.QuestionList}" var="Question" indexVar="indx">
+                                            <li class="slds-dropdown__item" role="presentation">
+                                                <a href="{! 'scorecard-answer-form?question='+Question.Id+'&amp;scorecard='+v.scorecardId}" role="menuitem" tabindex="0">
+                                                    <span class="slds-truncate" title="{!Question.Question__c}"><aura:unescapedHtml value="{!Question.Question__c}" /></span>
+                                                </a>
+                                            </li>
+                                        </aura:iteration>
+                                    </ul>
+                                </div>
+                                
+                            </aura:if>
+                        </div>
+                    </li>
+                </ol>
+                <!-- QuestionList Dropdown Close -->
+            </ol>
+        </nav>
+        <br />
+        
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_8-of-12">
+                
+                <article class="slds-card slds-card_boundary">
+                    <div class=" slds-grid">
+                        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                            
+                            <div class="slds-page-header__row">
+                                <div class="slds-page-header__col-title">
+                                    
+                                    <div class="slds-media">
+                                        <div class="slds-media__figure">
+                                            <span class="slds-icon_container">
+                                                <span class="slds-badge slds-badge_inverse">Q{!v.model.order}</span> 
+                                            </span>
+                                        </div>
+                                        
+                                        <div class="slds-media__body">
+                                            <div class="slds-page-header__name">
+                                                <div class="slds-page-header__name-title">
+                                                    <h1><span>{!v.model.title}</span></h1>
+                                                    <h4>
+                                                        <span class="slds-page-header__title">
+                                                            <span class="slds-cell-wrap">
+                                                                <aura:unescapedHtml value="{!v.model.question}" />
+                                                            </span>
+                                                        </span>
+                                                    </h4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </header>
+                    </div>
+                    
+                    <div class="slds-card__body slds-card__body_inner">
+                        <div class="slds-card-wrapper">
+                            <article class="slds-card slds-card_boundary">
+                                <div class="slds-card__header slds-grid">
+                                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                        <h2 class="slds-card__header-title">
+                                            <span class="slds-cell-wrap">Scoring Rubric</span>
+                                        </h2>
+                                    </header>
+                                    <!--  <div class="slds-no-flex">
+                                        <div aura:id="questionMenu" class="olc-section-menu slds-dropdown-trigger slds-dropdown-trigger_click olc-pointer" onclick="{!c.onMenuClicked}">
+                                            <button class="slds-button .slds-button__icon_x-small slds-button_icon-border-filled" aria-haspopup="true" title="Show More">
+                                                <lightning:icon iconName="utility:down" size="xx-small"></lightning:icon>
+                                                <span class="slds-assistive-text">Show More</span>
+                                            </button>
+                                          <div class="slds-dropdown slds-dropdown_left slds-dropdown_small">
+                                                <ul class="slds-dropdown__list" role="menu" aria-label="Show More">
+                                                    <aura:if isTrue="{!v.showRubric}">
+                                                        <li class="slds-dropdown__item" role="presentation">
+                                                            <a href="javascript:void(0);" role="menuitem" tabindex="0" onclick="{!c.onRubricViewClicked}">
+                                                                <span class="slds-truncate" title="Hide Scoring Rubric">Hide Scoring Rubric</span>
+                                                                <span class="slds-assistive-text">Hide Scoring Rubric</span>
+                                                            </a>
+                                                        </li>
+                                                        <aura:set attribute="else">
+                                                            <li class="slds-dropdown__item" role="presentation">
+                                                                <a href="javascript:void(0);" role="menuitem" tabindex="0" onclick="{!c.onRubricViewClicked}">
+                                                                    <span class="slds-truncate" title="View Scoring Rubric">View Scoring Rubric</span>
+                                                                    <span class="slds-assistive-text">View Scoring Rubric</span>
+                                                                </a>
+                                                            </li>
+                                                        </aura:set>
+                                                    </aura:if>
+                                                </ul>
+                                            </div> 
+                                        </div>
+                                    </div> -->
+                                </div>
+                                <div class="slds-card__body slds-card__body_inner">
+                                    <table >
+                                        <tr>
+                                            <aura:iteration items="{!v.model.rubrics}" var="rubric" indexVar="indx">
+                                                <td>
+                                                    <!-- <a>
+                                                        
+                                                    <div class="slds-box">
+                                                        <lightning:inputRichText value=""  /> 
+                                                       <lightning:input type="radio" name="rubric" onclick="{!c.onScoreClicked}" id="{!rubric.id}"/>&nbsp; 
+                                                        <div >
+                                                            <b>{!rubric.score}</b>
+                                                        </div>
+                                                        <aura:if isTrue="{!v.showRubric}"> 
+                                                            <div class="olc-container">
+                                                                <b>{!rubric.description}</b>
+                                                            </div>
+                                                       </aura:if> 
+                                                    </div>
+                                                        </a> -->
+                                                    <fieldset class="slds-form-element"  >
+                                                        <div class="slds-form-element__control" >
+                                                            <div class="slds-radio_button-group" >
+                                                                <span class="slds-button slds-radio_button">
+                                                                    <input type="radio" name="rubric" onclick="{!c.onScoreClicked}" id="{!rubric.id}"/>
+                                                                    <label class="slds-radio_button__label slds-p-around_x-small" for="{!rubric.id}" >
+                                                                        <!-- <span class="slds-radio_faux">{!rubric.description}</span> -->
+                                                                        <aura:unescapedHtml value="{!rubric.description}" />
+                                                                    </label>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </fieldset>
+                                                </td>&nbsp;
+                                            </aura:iteration>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </article>
+                            <br />
+                            <article class="slds-card slds-card_boundary">
+                                <div class="slds-card__header slds-grid">
+                                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                        <h2 class="slds-card__header-title">
+                                            <span class="slds-cell-wrap">Answer</span>
+                                        </h2>
+                                    </header>
+                                </div>
+                                <div class="slds-card__body slds-card__body_inner">
+                                    <div class="olc-container">
+                                        <lightning:inputRichText aura:id="answer" class="olc-height-tall300" value="{!v.answer}" placeholder="Type your answer.." disabledCategories="FORMAT_FONT"/>
+                                    </div>
+                                    <br />
+                                    <div class="olc-container olc-hidden">
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label" for="status">
+                                                <h2 class="slds-card__header-title">
+                                                    <span class="slds-cell-wrap">Status</span>
+                                                </h2>
+                                            </label>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-select_container">
+                                                    <select class="slds-select" id="status" onchange="{!c.onStatusChanged}">
+                                                        <option value="Needs Review">Needs Review</option>
+                                                        <option value="In Progress">In Progress</option>
+                                                        <option value="Completed">Completed</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br /><br />
+                                    <div class="olc-container">
+                                        <div class="olc-pull-right">
+                                            <!-- <aura:if isTrue="{!v.Role != 'Reviewer'}"> -->
+                                            <lightning:button variant="destructive" label="Clear Answer" title="Clear Answer" onclick="{! c.onClearAnswer }"/>
+                                            <lightning:button variant="brand" label="Save Changes" title="Save Changes" onclick="{! c.onSaveChanges }"/>
+                                            <lightning:button variant="success" label="Save &amp; Continue" title="Save &amp; Continue" onclick="{! c.onSaveContinue }"/> 
+                                            <!-- </aura:if> 
+                                            <aura:if isTrue="{!v.Role == 'Co-Author'}"> -->
+                                            <!-- <aura:set attribute="else"> -->
+                                            <!-- <lightning:button variant="destructive" label="Clear Answer" title="Clear Answer" onclick="{! c.onClearAnswer }"/>
+                                            <lightning:button variant="brand" label="Save Changes" title="Save Changes" onclick="{! c.onSaveChangesRev }"/>
+                                            <lightning:button variant="success" label="Save &amp; Continue" title="Save &amp; Continue" onclick="{! c.onSaveContinueRev }"/> -->
+                                            <!--  </aura:set> -->
+                                            <!-- </aura:if> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </article>
+                            <br />   
+                            <c:ScorecardComments isLoading="{!v.isLoading}" parentId="{!v.model.review.id}" parentType="Answer" />
+                            <br />
+                            <c:AttachedFiles title="Submitted Files" recordType="Scorecard_Review__c" recordId="{!v.model.review.id}"/>
+                        </div>
+                        <br />
+                    </div>
+                    
+                </article>
+                
+            </div>
+            
+            <div class="slds-col slds-size_4-of-12">
+                <article class="slds-card slds-card_boundary">
+                    <div class=" slds-grid">
+                        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                            <h2 class="slds-card__header-title">
+                                <span class="slds-cell-wrap">Description</span>
+                                <span class="slds-assistive-text">Description</span>
+                            </h2>
+                        </header>
+                    </div>
+                    <div class="slds-card__body slds-card__body_inner">
+                        <div class="uiOutputRichText" linkify="true" >
+                            <aura:unescapedHtml value="{!v.model.description}"/>
+                        </div>
+                        
+                    </div>
+                </article>
+            </div>
+        </div>
+    </div>
+    
+</aura:component>

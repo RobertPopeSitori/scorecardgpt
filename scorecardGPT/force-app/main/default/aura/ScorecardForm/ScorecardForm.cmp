@@ -1,0 +1,109 @@
+<!--
+ - Created by SumitK
+ -->
+
+<aura:component
+                description="ScorecardCreationForm"
+                implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes"
+                access="global"
+                >
+    <!-- PAGE HEADER -->
+    <lightning:layout class="slds-page-header slds-page-header--object-home">
+        <lightning:layoutItem>
+            <lightning:icon
+                            iconName="standard:scan_card"
+                            alternativeText="My Expenses"
+                            />
+        </lightning:layoutItem>
+        <lightning:layoutItem padding="horizontal-small">
+            <div class="page-section page-header">
+                <h1 class="slds-text-heading--label">Scorecard</h1>
+                <h2 class="slds-text-heading--medium">Add New Scorecard</h2>
+            </div>
+        </lightning:layoutItem>
+    </lightning:layout>
+    <!-- / PAGE HEADER -->
+    
+    <!-- NEW SCORECARD FORM -->
+    <lightning:layout>
+        <lightning:layoutItem padding="around-large" size="12">
+            <!-- [[ scorecard form goes here ]] -->
+            <!-- CREATE NEW SCORECARD -->
+            <div aria-labelledby="newscorecardform">
+                <!-- BOXED AREA -->
+                <fieldset class="slds-box slds-theme--default slds-container--small">
+                    <legend
+                            id="newscorecardform"
+                            class="slds-text-heading--small 
+                                   slds-p-vertical--medium"
+                            >
+                        Add Scorecard
+                    </legend>
+                    
+                    <!-- CREATE NEW Scorecard FORM -->
+                    <form class="slds-form--stacked">
+                        <lightning:input
+                                         aura:id="scorecardform"
+                                         label="Scorecard Title"
+                                         name="scorecardtitle"
+                                         value="{!v.scorecard.Title}"
+                                         required="true"
+                                         />
+                        <lightning:input
+                                         aura:id="scorecardform"
+                                         label="Organization "
+                                         name="org"
+                                         value="{!v.scorecard.Org}"
+                                         />
+                        <lightning:input
+                                         aura:id="scorecardform"
+                                         label="Template"
+                                         name="client"
+                                         value="{!v.scorecard.templates}"
+                                         placeholder="OLC Org"
+                                         />
+                        
+                        <lightning:textarea name="description"
+                                            value="{!v.scorecard.description}"
+                                            label="Description" 
+                                            maxlength="0" />
+                        <!--<lightning:input type="date" aura:id="scorecardform" label="Expense Date"
+                             name="addeddate"
+                             value="{!v.scorecard.Date__c}"/>-->
+                        <lightning:input
+                                         type="checkbox"
+                                         aura:id="scorecardform"
+                                         label="Make Qsra Benchmark Viewable"
+                                         name="w"
+                                         checked="{!v.scorecard.w}"
+                                         />
+                        <lightning:input
+                                         type="checkbox"
+                                         aura:id="scorecardform"
+                                         label="Make Self Assessment Benchmark Viewable"
+                                         name="e"
+                                         checked="{!v.scorecard.e}"
+                                         />
+                        <lightning:input
+                                         type="checkbox"
+                                         aura:id="scorecardform"
+                                         label="I agree to the Terms of Service"
+                                         name="o"
+                                         checked="{!v.scorecard.o}"
+                                         />
+                        <lightning:button
+                                          label="Create Scorecard"
+                                          class="slds-m-top--medium"
+                                          variant="brand"
+                                          onclick="{!c.clickCreate}"
+                                          />
+                    </form>
+                    <!-- / CREATE NEW SCORECARD FORM -->
+                </fieldset>
+                <!-- / BOXED AREA -->
+            </div>
+            <!-- / CREATE NEW SCORECARD -->
+        </lightning:layoutItem>
+    </lightning:layout>
+    <!-- / NEW EXPENSE FORM -->
+</aura:component>

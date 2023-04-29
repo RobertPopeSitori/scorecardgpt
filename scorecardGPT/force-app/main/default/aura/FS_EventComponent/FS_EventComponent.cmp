@@ -1,0 +1,7 @@
+<!--
+ - Created by daweima on 2019-09-04.
+ -->
+<aura:component description="FS_EventComponent" implements="forceCommunity:availableForAllPageTypes" controller="FS_LTEventComponentController">
+   <aura:handler name="init" value="{!this}" action="{!c.init}"/> 
+    <PagesApi:FontevaController/> 
+</aura:component>

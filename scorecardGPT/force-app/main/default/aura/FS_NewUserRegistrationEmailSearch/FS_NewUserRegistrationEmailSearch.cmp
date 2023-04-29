@@ -1,0 +1,167 @@
+<!--
+ - Created by cmudd on 2019-05-29.
+ -->
+
+<aura:component description="FS_NewUserRegistrationEmailSearch" controller="FS_NewUserRegistrationController">
+    <aura:attribute name="workEmail" type="String" description="The work email collected from the user"/>
+    <aura:attribute name="disableButton" type="Boolean" default="true"
+                    description="Prevent users from attempting to verify their email until an acceptable format is entered"/>
+    <aura:attribute name="showError" type="Boolean" required="true" description="" default="false" access="public"/>
+    <aura:attribute name="errorMessage" type="String" required="false" description="" access="public"/>
+    <aura:attribute name="accounts" type="Account[]"
+                    description="List of accounts that have validated the email domain of the email supplied"/>
+    <aura:attribute name="userNotFoundEmail" type="String"
+                    description="only populated if the FS_FundUserEvent returns no users. fires an event to search for a list of accounts"/>
+    <aura:attribute name="userNotFound" type="Boolean" default="false"
+                    description="checked if no user was found from the domain supplied"/>
+    <aura:attribute name="contactFound" type="Boolean" default="false"
+                    description="true if a contact with no associated user is found with the given email"/>
+    <aura:attribute name="contactId" type="String"
+                    description="the contact id for the contact with no associated user"/>
+    <aura:attribute name="contactFirstName" type="String"
+                    description="the last name for the contact with no associated user"/>
+    <aura:attribute name="contactLastName" type="String"
+                    description="the first name for the contact with no associated user"/>
+    <aura:attribute name="contactWorkEmail" type="String"
+                    description="the work email for the contact with no associated user"/>
+    <aura:attribute name="contactEmail" type="String"
+                    description="the work email for the contact with no associated user"/>
+    <aura:attribute name="showSpinner" type="Boolean" required="true" description="" default="false"/>
+    <aura:attribute name="doneRegistration" type="Boolean"
+                    description="changed true when done registering so the appropriate component can be rendered"/>
+    <aura:attribute name="defaultRetUrl" type="String" required="true"
+                    description="The default ret URL after finishing registration"/>
+    <aura:attribute name="selfRegisterAccountId" type="String"
+                    description="the ID of the Self-Registration Account used for new users in Salesforce"/>
+    <aura:attribute name="userFound" type="Boolean" default="false"
+                    description="changed true when a user is found in the system with the given work email"/>
+    <aura:attribute name="labels" type="Map" default="{}"/>
+    <aura:attribute name="LoginURL" type="String" default="https://my.onlinelearningconsortium.org/s/login"/>
+    
+    
+    
+    <!--    <aura:registerEvent name="addErrorClassEvent" type="c:FS_AddErrorClass" />-->
+    
+    <!--    <aura:handler event="aura:waiting" action="{!c.showSpinner}"/>-->
+    <!--    <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}"/>-->
+    
+    
+    <!--    <aura:registerEvent name="userSearch" type="c:FS_FindUserEvent" />-->
+    <!--    <aura:registerEvent name="accountsSearch" type="c:FS_FindAccountsWithEmailDomainEvent" />-->
+    
+    <div class="slds-grid slds-align_absolute-center">
+        
+        <div class="slds-col--padded-around ">
+            <aura:if isTrue="{!and(!v.userFound, !v.contactFound)}">
+                <div class="slds-grid--align-center slds-align_absolute-center slds-m-around--medium"
+                     onkeypress="{!c.keyCheck}">
+                    <lightning:input type="email"
+                                     aura:id="emailInput"
+                                     name="emailInput"
+                                     label=""
+                                     class="slds-size--1-of-4 slds-align_absolute-center"
+                                     placeholder="Enter your email"
+                                     onchange="{!c.setEmailAttr}"/>
+                    <!--            onchange="c.setEmailAttr(this, helper)"/>-->
+                </div>
+                <div class="slds-grid--align-center slds-align_absolute-center slds-m-around--medium errorAlert">
+                    <div class="slds-size--4-of-7" style="text-align:center;">
+                        <aura:unescapedHtml value="{!$Label.c.FS_New_User_Registration_Email_Notice}"/>
+                    </div>
+                </div>
+                <div class="slds-grid--align-center slds-align_absolute-center slds-m-around--medium">
+                    <lightning:button label="Verify Email"
+                                      disabled="{!v.disableButton}"
+                                      class="slds-button slds-button--brand"
+                                      variant="brand"
+                                      onclick="{!c.callLookForExistingUser}"/>
+                    <!--            onclick="c.lookForExistingUser(this)"/>-->
+                </div>
+            </aura:if>
+            <aura:if isTrue="{!v.userFound}">
+                <div class="slds-grid--align-center slds-align_absolute-center slds-m-around--medium">
+                    <lightning:button label="Login"
+                                      class="slds-button slds-button--brand"
+                                      variant="brand"
+                                      onclick="{!c.redirectToUrl}"/>
+                    <!--            onclick="c.lookForExistingUser(this)"/>-->
+                </div>
+            </aura:if>
+            
+            <!--            <aura:if isTrue="{!v.contactFound}">-->
+            
+            <!--                <div class="slds-text-heading_medium slds-grid_align-center slds-grid slds-align_absolute-center slds-p-around&#45;&#45;small">-->
+            <!--                    An existing account with that email was found. Is this you?-->
+            <!--                </div>-->
+            <!--                <lightning:card class="slds-align_absolute-center slds-size&#45;&#45;2-of-3">-->
+            <!--                    &lt;!&ndash;                    <lightning:card class="slds-grid slds-align_absolute-center">&ndash;&gt;-->
+            <!--&lt;!&ndash;                    <div class="slds-grid slds-align_absolute-center slds-m-around&#45;&#45;medium slds-grow">&ndash;&gt;-->
+            <!--                    <div class="slds-align_absolute-center slds-grow slds-p-top&#45;&#45;small">-->
+            <!--                        <div class="slds-grow slds-size&#45;&#45;1-of-2">-->
+            <!--                            <lightning:input type="text"-->
+            <!--                                             disabled="true"-->
+            <!--                                             value="{!v.contactFirstName}"-->
+            <!--                                             label="First Name"/>-->
+            <!--                        </div>-->
+            <!--                    </div>-->
+            <!--&lt;!&ndash;                    <div class="slds-grid slds-align_absolute-center slds-m-around&#45;&#45;medium">&ndash;&gt;-->
+            <!--                    <div class="slds-align_absolute-center slds-grow slds-p-top&#45;&#45;small">-->
+            <!--                        <div class="slds-grow slds-size&#45;&#45;1-of-2">-->
+            <!--                            <lightning:input type="text"-->
+            <!--                                             disabled="true"-->
+            <!--                                             value="{!v.contactLastName}"-->
+            <!--                                             label="Last Name"/>-->
+            <!--                        </div>-->
+            <!--                    </div>-->
+            <!--                    <div class="slds-align_absolute-center slds-grow slds-p-top&#45;&#45;small">-->
+            <!--                        <div class="slds-grow slds-size&#45;&#45;1-of-2">-->
+            <!--                            <lightning:input type="text"-->
+            <!--                                             disabled="true"-->
+            <!--                                             value="{!v.contactEmail}"-->
+            <!--                                             label="Personal Email"/>-->
+            <!--                        </div>-->
+            <!--                    </div>-->
+            <!--                    <div class="slds-align_absolute-center slds-grow slds-p-top&#45;&#45;small">-->
+            <!--                        <div class="slds-grow slds-size&#45;&#45;1-of-2">-->
+            <!--                            <lightning:input type="text"-->
+            <!--                                             disabled="true"-->
+            <!--                                             value="{!v.contactWorkEmail}"-->
+            <!--                                             label="Work Email"/>-->
+            <!--                        </div>-->
+            <!--                    </div>-->
+            <!--                    <div class="slds-grid slds-grid_align-spread slds-grid_align-end slds-p-right&#45;&#45;xxx-small slds-p-top&#45;&#45;x-small">-->
+            <!--                        <lightning:button label="No"-->
+            <!--                                          onclick="{!c.createNewUser}"-->
+            <!--                                          class="slds-button slds-button_neutral"/>-->
+            <!--                        <lightning:button label="Yes"-->
+            <!--                                          onclick="{!c.activateContact}"-->
+            <!--                                          class="slds-button slds-button_brand"/>-->
+            <!--                    </div>-->
+            <!--                </lightning:card>-->
+            
+            <!--                        </div>-->
+            <!--                    </lightning:card>-->
+            <!--                                <div class="slds-grid&#45;&#45;align-center slds-align_absolute-center slds-m-around&#45;&#45;medium">-->
+            <!--                                    <lightning:recordViewForm recordId="{!v.contactId}" objectApiName="Contact" >-->
+            <!--                                        <div class="slds-grid_align-space slds-box slds-col">-->
+            <!--                                            <lightning:outputField fieldName="FirstName" class="slds-size&#45;&#45;2-of-3"/>-->
+            <!--                                        </div>-->
+            <!--                                        <div class="slds-grid_align-space slds-box slds-col">-->
+            <!--                                            <lightning:outputField fieldName="LastName" class="slds-size&#45;&#45;2-of-3"/>-->
+            <!--                                        </div>-->
+            <!--                                        <div class="slds-grid_align-space slds-box slds-col">-->
+            <!--                                            <lightning:outputField fieldName="OrderApi__Work_Email__c" class="slds-size&#45;&#45;2-of-3"/>-->
+            <!--                                        </div>-->
+            <!--                                        <div class="slds-grid slds-grid_align-spread slds-grid_align-end slds-p-right&#45;&#45;xxx-small slds-p-top&#45;&#45;x-small">-->
+            <!--                                            <lightning:button label="No" onclick="{!c.createNewUser}"-->
+            <!--                                                              class="slds-button slds-button_neutral"/>-->
+            <!--                                            <lightning:button label="Yes" onclick="{!c.activateContact}"-->
+            <!--                                                              class="slds-button slds-button_brand"/>-->
+            <!--                                        </div>-->
+            <!--                                    </lightning:recordViewForm>-->
+            <!--                                </div>-->
+            
+            <!--            </aura:if>-->
+        </div>
+    </div>
+</aura:component>

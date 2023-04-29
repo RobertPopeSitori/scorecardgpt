@@ -1,0 +1,27 @@
+.THIS {
+}
+
+.THIS .olc-height-300 {
+	height: 300px;
+}
+
+	.THIS .olc-pull-left {
+		text-align: left;
+		float: left;
+		width: auto;
+	}
+
+	.THIS .olc-pull-right {
+		text-align: right;
+		float: right;
+		width: auto;
+	}
+
+	.THIS .olc-container {
+		width: 100%;
+		clear: both;
+	}
+
+	.THIS .padded10 {
+		padding: 10px;
+	}

@@ -1,0 +1,21 @@
+.THIS .pfm-theme_danger {
+    background-color: rgb(212, 80, 76);
+    color: white;
+}
+
+.THIS .pfm-theme_success {
+    background-color: rgb(75, 202, 129);
+}
+
+.THIS .pfm-theme_warning {
+    background-color: rgb(255, 183, 93);
+    color: white;
+}
+
+.THIS .pfm-theme_warning svg {
+    fill: white;
+}
+
+.THIS .hide-loading-span {
+    display: none;
+}

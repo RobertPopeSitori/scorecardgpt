@@ -1,0 +1,144 @@
+<!--
+ - Created by Christopher Mudd from fusionSpan on 2019-05-29.
+ -->
+
+<aura:component description="FS_NewUserRegistration" controller="FS_NewUserRegistrationController"
+                implements="forceCommunity:availableForAllPageTypes">
+    <ltng:require styles="{!$Resource.FS_SLDS +
+            '/styles/salesforce-lightning-design-system.min.css'}"/>
+    <!--    <aura:attribute name="existingUser" type="User" description="The existing user in Salesforce whose username matches the work-->
+    <!--email provided"/>-->
+    <aura:attribute name="workEmail" type="String" description="The work email entered by the user on the home page"/>
+    <aura:attribute name="showError" type="Boolean" required="true" description="" default="false" access="public"/>
+    <aura:attribute name="errorMessage" type="String" required="false" description="" access="public"/>
+    <aura:attribute name="showSpinner" type="Boolean" required="true" description="" default="false"/>
+    <aura:attribute name="accountSelectionName" type="String" description="the selected account"/>
+    <aura:attribute name="userNotFoundEmail" type="String"
+                    description="if email search returns no users/contacts, fires an event to search for a list of accounts w/ email domain"/>
+    <aura:attribute name="userNotFound" type="Boolean" default="false"
+                    description="checked if no user was found from the domain supplied"/>
+    <aura:attribute name="accounts" type="List"
+                    description="List of accounts that have validated the email domain of the email supplied"/>
+    <aura:attribute name="accountSelection" type="String"
+                    description="The account selected from the c:FS_NewUserRegistrationSelectAccount"/>
+    <aura:attribute name="accountsFound" type="Boolean"
+                    description="set true when an account is selected so the application form can be displayed"/>
+    <aura:attribute name="onlyOneAccount" type="Boolean"
+                    description="true if only one account is found from the email search"/>
+    <aura:attribute name="selfRegistrationEnabled" type="Boolean" default="false"
+                    description="true if the user is self registering"/>
+    <aura:attribute name="registerNewUser" type="Boolean" default="false"
+                    description="changed to true if the user selects Register New User"/>
+    <aura:attribute name="userFound" type="Boolean" default="false"
+                    description="changed to true if the user exists"/>
+    <aura:attribute name="doneRegistration" type="Boolean" default="false"
+                    description="changed true when done registering so the appropriate component can be rendered"/>
+    <aura:attribute name="defaultRetUrl" type="String" required="true"
+                    description="The default ret URL after finishing registration"/>
+    <aura:attribute name="passwordRules" type="String"
+                    description="The password rules to be displayed to the registering user"/>
+    <aura:attribute name="adminId" type="String"
+                    description="The admin ID to assign the Contact as the OwnerID"/>
+    <aura:attribute name="selfRegisterAccountId" type="String"
+                    description="the ID of the Self-Registration Account used for new users in Salesforce"/>
+    <aura:attribute name="labels" type="Map" default="{}" />
+
+    <!--    <aura:handler event="aura:waiting" action="{!c.showSpinner}"/>-->
+    <!--    <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}"/>-->
+<!--    <aura:handler name="addClassEvent" event="c:FS_AddErrorClass" action="{!c.addErrorClass}"/>-->
+    <aura:handler name="change" value="{!v.doneRegistration}" action="{!c.redirectAfterRegistration}"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+
+    <!--    <aura:handler name="userSearch" event="c:FS_FindUserEvent" action="{!c.handleLookForExistingUserEvent}" />-->
+
+    <!--    <aura:handler name="change" value="{!v.userNotFoundEmail}" action="{!c.handleLookForExistingAccountsEvent}" />-->
+    <div id="body" class="slds-grid slds-p-top_xx-large slds-form--compound">
+        <aura:if isTrue="{!v.showSpinner}">
+            <div class="slds-spinner_container">
+<!--                <lightning:spinner class="" alternativeText="Loading ..." />-->
+            </div>
+        </aura:if>
+
+        <div class="slds-col--padded-around--medium">
+            <div class="slds-grid  slds-grid--align-center ">
+                <img src="{!$Resource.FS_OLCLOGO}"
+                     alt="{!$Label.c.FS_Alternate_Logo_Url}"/>
+            </div>
+            <aura:renderIf isTrue="{!v.showError}">
+                <div id="error" class="slds-grid slds-p-around--small slds-align_absolute-center errorAlert" >
+<!--                    <ui:outputRichText aura:id="errorClass"-->
+<!--                                       value="{!v.errorMessage}"/>-->
+                    <aura:unescapedHtml value="{!v.errorMessage}" />
+                </div>
+            </aura:renderIf>
+            <!--            <aura:if isTrue="{!!v.registerNewUser}">-->
+            <!--                <c:FS_NewUserRegistrationHome showError="{!v.showError}"-->
+            <!--                                              showSpinner="{!v.showSpinner}"-->
+            <!--                                              errorMessage="{!v.errorMessage}"-->
+            <!--                                              workEmail="{!v.workEmail}"-->
+
+            <!--                />-->
+            <!--            </aura:if>-->
+            <!--            <aura:if isTrue="{!and(registerNewUser, !v.userNotFound)}">-->
+            <aura:if isTrue="{!and(!v.doneRegistration, !v.userNotFound)}">
+                <c:FS_NewUserRegistrationEmailSearch showError="{!v.showError}"
+                                                     showSpinner="{!v.showSpinner}"
+                                                     errorMessage="{!v.errorMessage}"
+                                                     userFound="{!v.userFound}"
+                                                     userNotFound="{!v.userNotFound}"
+                                                     userNotFoundEmail="{!v.userNotFoundEmail}"
+                                                     workEmail="{!v.workEmail}"
+                                                     doneRegistration="{!v.doneRegistration}"
+                                                     defaultRetUrl="{!v.defaultRetUrl}"
+                                                     selfRegisterAccountId="{!v.selfRegisterAccountId}"
+                                                     labels="{!v.labels}"
+
+                />
+            </aura:if>
+            <aura:if isTrue="{!and(!v.onlyOneAccount, v.userNotFound)}">
+                <c:FS_NewUserRegistrationSelectAccount showError="{!v.showError}"
+                                                       showSpinner="{!v.showSpinner}"
+                                                       errorMessage="{!v.errorMessage}"
+                                                       workEmail="{!v.workEmail}"
+                                                       accountSelectionName="{!v.accountSelectionName}"
+                                                       accountSelection="{!v.accountSelection}"
+                                                       accountsFound="{!v.accountsFound}"
+                                                       onlyOneAccount="{!v.onlyOneAccount}"
+                                                       selfRegistrationEnabled="{!v.selfRegistrationEnabled}"
+                                                       labels="{!v.labels}"
+                />
+                <aura:set attribute="else">
+                    <div class="slds-p-top--large"></div>
+                </aura:set>
+
+            </aura:if>
+            <aura:if isTrue="{!v.accountsFound}">
+                <aura:renderIf isTrue="{!v.accountsFound}">
+                    <c:FS_NewUserRegistrationForm showError="{!v.showError}"
+                                                  showSpinner="{!v.showSpinner}"
+                                                  errorMessage="{!v.errorMessage}"
+                                                  accountSelectionName="{!v.accountSelectionName}"
+                                                  accountSelection="{!v.accountSelection}"
+                                                  workEmail="{!v.workEmail}"
+                                                  onlyOneAccount="{!v.onlyOneAccount}"
+                                                  selfRegistrationEnabled="{!v.selfRegistrationEnabled}"
+                                                  doneRegistration="{!v.doneRegistration}"
+                                                  passwordRules="{!v.passwordRules}"
+                                                  adminId="{!v.adminId}"
+                                                  defaultRetUrl="{!v.defaultRetUrl}"
+                                                  selfRegisterAccountId="{!v.selfRegisterAccountId}"
+                                                  labels="{!v.labels}"
+                    />
+                </aura:renderIf>
+            </aura:if>
+            <aura:if isTrue="{!and( v.userNotFound,v.doneRegistration)}">
+                <div class="slds-p-around--medium slds-grid slds-box slds-text-heading_large">
+                    Thank you for registering with us!
+                </div>
+            </aura:if>
+        </div>
+
+    </div>
+
+</aura:component>

@@ -1,0 +1,33 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global">
+
+    <aura:attribute name="showNotification" type="boolean"></aura:attribute>
+    <aura:attribute name="title" type="string"></aura:attribute>
+    <aura:attribute name="content" type="string"></aura:attribute>
+    <aura:attribute name="type" type="string"></aura:attribute>
+    <aura:attribute name="showModal" type="boolean" default="false" access="private"></aura:attribute>
+
+    <aura:handler name="change" value="{!v.showNotification}" action="{!c.onVisibilityChanged}"/>
+    <aura:registerEvent name="notificationDismissal" type="c:OnPortalNotificationDismissed"/>
+
+    <aura:if isTrue="{!v.showModal}">
+        <div class="slds">
+            <div class="slds modal">
+                <div aura:id="DeleteModal" role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+                    <div class="slds-modal__container">
+                        <div class="slds-modal__header">
+                            {!v.title}
+                        </div>
+                        <div class="slds-modal__content slds-p-around--medium">
+                            {!v.content}
+                        </div>
+                        <div class="slds-modal__footer height60">
+                            <button class="slds-button slds-button--neutral" onclick="{!c.onDismissModal}">Okay</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-backdrop slds-backdrop--open"></div>
+        </div>
+    </aura:if>
+
+</aura:component>

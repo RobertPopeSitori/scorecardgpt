@@ -1,0 +1,34 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes" access="global">
+    <!--<ltng:require styles="{!$Resource.bootstrap4}"/>-->
+    <!--<ltng:require scripts="{!$Resource.jquerymin4}"></ltng:require>
+    <ltng:require scripts="{!$Resource.bootstrapmin4}"></ltng:require> -->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="Items" type="object[]"/>
+    <footer id="footer" class="content-info" style="background-color: #ffffff;text-align:left !important">
+        <div class="bottom top">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3 copyright">
+                        Copyright © 2021 Online Learning Consortium
+                    </div>
+                    <div class="col-md-3 footer-address">
+                        <div class="f-adds"> <p>Address: <br></br>Online Learning Consortium, Inc.<br></br> 6 Liberty Square #2309<br></br> Boston, MA 01950-8238 </p></div>
+                        <div class="f-phone"> <p>Phone: Voice: 617.716.1414 <br></br></p></div>
+                        <div class="f-email"> <p>Email:<a href="mailto:info@onlinelearning-c.org" data-aura-rendered-by="473:0">info@onlinelearning-c.org</a></p></div>
+                    </div>
+                    <div class="col-md-6 links">
+                        <ul id="menu-footer-menu-links" class="menu">
+                            <aura:iteration items="{!v.Items}" var="item">
+                                <li>
+                                    <a href="{!item.url}">{!item.title}</a>
+                                </li>
+                            </aura:iteration>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    
+</aura:component>

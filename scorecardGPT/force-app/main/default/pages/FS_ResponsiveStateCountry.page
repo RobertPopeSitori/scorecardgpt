@@ -1,0 +1,4 @@
+<apex:page controller="FS_ResponsiveStateCountryController" contentType="application/x-JavaScript; charset=utf-8"
+           showHeader="false" sideBar="false" standardStylesheets="false">
+	{!JSONCountriesAndStates}
+</apex:page>

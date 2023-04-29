@@ -1,0 +1,51 @@
+<aura:component controller="TicketTypePrintBadgeCMP" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="recordId" type="Id"/>
+    <aura:attribute name="startdate" type="date"/>
+    <aura:attribute name="enddate" type="date"/>
+    <aura:attribute name="Enable" type="boolean" default="true"/>
+    <aura:attribute name="Tickettype" Type="EventApi__Ticket_Type__c[]"/>
+    
+    <div id="langButtons">
+        <div class="slds-card">
+            <div class="col-md-12">
+                <tr>
+                <div class="managebadge">
+                    Ticket  Type
+                  </div>
+                    <td>
+                    <div>
+               <lightning:input type="date" value="{!v.startdate}" label="Start Date" onchange="{!c.date}" />
+                <lightning:input type="date" value="{!v.enddate}" label="End Date"  onchange="{!c.date}" />
+                        
+                        </div>
+                        </td>
+                </tr>
+                <br></br>
+                <table>
+                    <tbody>
+                        <tr>
+                            &nbsp;<th>Item Name</th>
+                            <th>Price</th>
+                            <th>Ticket Sold</th>
+                            <th>Is Active</th>
+                            <th></th>
+                        </tr><br/>
+                        <aura:iteration items="{!v.Tickettype}" var="tt">
+                            <tr>
+                                &nbsp;<td>{!tt.Name}</td>
+                                <td>{!tt.EventApi__Price__c}</td>
+                                <td>{!tt.EventApi__Quantity_Sold__c}</td>
+                                <td>{!tt.EventApi__Is_Active__c}</td>
+                                <td><lightning:button variant="success" label="Download Pdf" title="Download Pdf" value="{!tt.Id}" onclick="{!c.firetoPDf}" /></td>
+                            </tr>
+                            <br/>
+                        </aura:iteration>
+                        <br/>
+                    </tbody>
+                </table>
+                <br/>
+            </div>
+        </div>
+    </div>
+</aura:component>

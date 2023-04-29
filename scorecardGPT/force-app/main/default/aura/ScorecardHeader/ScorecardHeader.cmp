@@ -1,0 +1,50 @@
+<aura:component controller="ScorecardHeaderController" implements="forceCommunity:availableForAllPageTypes" access="global">
+	<aura:attribute name="scorecardId" type="string"></aura:attribute>
+	<aura:attribute name="model" type="object"></aura:attribute>
+	<aura:attribute name="showSummary" type="boolean" default="false"></aura:attribute>
+	
+	<aura:handler name="init" value="{!this}" action="{!c.onInit}" />
+	<aura:handler name="change" value="{!v.scorecardId}" action="{!c.onInit}"/>
+
+	<aura:if isTrue="{!v.showSummary}">
+		<div class="slds">
+			<div class="slds-tabs_card">
+				<div class="slds-page-header">
+				 <div class="slds-page-header__row">
+				   <div class="slds-page-header__col-title">
+					<div class="slds-media">
+					  <div class="slds-media__figure">
+						<span class="slds-icon_container">
+						 <lightning:icon iconName="utility:matrix" size="small" />
+						</span>
+					  </div>
+					  <div class="slds-media__body">
+						<div class="slds-page-header__name">
+						 <div class="slds-page-header__name-title">
+						   <h1><span>{!v.model.Scorecard.Organization__r.Name}</span></h1>
+						   <h4><span class="slds-page-header__title slds-truncate" title="Recently Viewed">{!v.model.Scorecard.Title__c}</span></h4>
+						 </div>
+						</div>
+					  </div>
+					</div>
+				   </div>
+				   <div class="slds-page-header__col-actions">
+					<div class="slds-page-header__controls">
+						<lightning:progressIndicator currentStep="{!v.model.progress}" type="base" title="Scorecard Status" class="olc-progress-indicator" variant="base">
+							<lightning:progressStep label="In Progress" value="1"/>
+							<lightning:progressStep label="In Review" value="2"/>
+							<lightning:progressStep label="In Final Review" value="3"/>
+							<lightning:progressStep label="Completed" value="4"/>
+						</lightning:progressIndicator>
+					</div>
+				   </div>
+				 </div>
+				</div>
+                    <div class="slds-card__body slds-card__body_inner">
+                         <aura:text value="{!v.model.Scorecard.Description__c}" />
+                    </div>
+			</div>
+		</div>
+		<br />
+	</aura:if>
+</aura:component>

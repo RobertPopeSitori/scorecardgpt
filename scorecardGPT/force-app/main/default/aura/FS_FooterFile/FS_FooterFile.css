@@ -1,0 +1,250 @@
+.THIS footer#footer {
+    position: relative;
+}
+.THIS footer#footer .footer-logo {
+    background-image: url("../img/logo_footer.png");
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    width: 175px;
+    height: 117px;
+    display: block;
+}
+.THIS footer#footer .top {
+    padding-bottom: 30px;
+    background: #f7f7f8;
+}
+.THIS footer#footer .social-links {
+    float: left;
+    clear: both;
+}
+.THIS footer#footer .widget h3 {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    font-size: 18px;
+    font-weight: 300;
+    text-transform: capitalize;
+    line-height: 20px;
+    color: #999;
+    clear: both;
+}
+.THIS footer#footer .widget ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+.THIS footer#footer .widget ul li {
+    padding: 10px 0;
+}
+.THIS footer#footer .widget ul li:first-child {
+    padding-top: 0;
+}
+.THIS footer#footer .widget ul.social-links {
+    margin-top: 40px;
+    margin-left: -3px;
+}
+.THIS footer#footer .widget ul.social-links li {
+    padding: 0;
+}
+.THIS footer#footer .widget_twitter .moon-twitter {
+    color: #27b3e5;
+    border: solid 1px #27b3e5;
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    border-radius: 12px;
+    -moz-background-clip: padding;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    width: 24px;
+    text-align: center;
+    height: 24px;
+    padding-top: 2px;
+    position: absolute;
+    top: 4px;
+    left: 5px;
+}
+.THIS footer#footer .contact {
+    height: 136px;
+    width: 270px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background-image: url("../img/map.png");
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+}
+.THIS footer#footer .contact li {
+    margin-bottom: 8px;
+    padding: 0 !important;
+}
+.THIS footer#footer .contact li.address i {
+    height: 100px;
+}
+.THIS footer#footer .contact li span {
+    line-height: 20px;
+}
+.THIS footer#footer .contact li span span {
+    font-weight: 400;
+}
+.THIS footer#footer .contact li i {
+    margin-right: 10px;
+    height: 30px;
+    float: left;
+    margin-top: 2px;
+    color: #dbdee4;
+}
+.THIS footer#footer .tweet-list dt {
+    width: 24px;
+    height: 24px;
+    border-radius: 40px;
+    -webkit-border-radius: 40px;
+    -moz-border-radius: 40px;
+    float: left;
+    position: relative;
+}
+.THIS footer#footer .tweet-list dt i {
+    position: absolute;
+    top: 4px;
+    left: 5px;
+}
+.THIS footer#footer .tweet-list dd {
+    margin-left: 40px;
+}
+.THIS footer#footer .tweet-list dd.date {
+    font-size: 12px;
+    color: #999;
+    float: left;
+    width: 100%;
+    margin-bottom: 20px;
+}
+.THIS footer#footer .bottom {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+.THIS footer#footer .bottom .copyright {
+    font-size: 13px;
+}
+.THIS footer#footer .bottom .links .menu {
+    border-top: 2px solid #bbbaba;
+    float: right;
+}
+.THIS footer#footer .bottom .links .menu li {
+    font-size: 12px;
+    padding-left: 8px;
+    padding-right: 8px;
+    margin-top: 5px;
+    border-left: 1px solid #444;
+    height: 11px;
+    line-height: 12px;
+}
+.THIS footer#footer .bottom .links .menu li:first-child {
+    border-left: none;
+}
+.THIS footer#footer .bottom .links .menu li a {
+    line-height: 12px;
+    color: #666;
+}
+.THIS .salesforceIdentityLoginBody2 .cHeaderPanel, .THIS .salesforceIdentityLoginBody2 .cFooterPanel {
+    position: relative !important;
+}
+
+.THIS .salesforceIdentityLoginBody2 .cCenterPanel {
+    min-height: 400px;
+}
+
+.THIS footer#footer .bottom .copyright {
+    font-size: 13px;
+}
+
+.THIS footer {
+    display: block;
+}
+.THIS footer#footer .top {
+    padding-bottom: 30px !important;
+    background: #f7f7f8 !important;
+    text-align: left !important;
+}
+.THIS footer#footer .bottom {
+    padding-top: 25px !important;
+    padding-bottom: 20px !important;
+}
+@media (min-width: 1200px){
+.THIS .container, .THIS .container-lg, .THIS .container-md, .THIS .container-sm, .THIS .container-xl {
+    max-width: 1140px;
+    }}
+@media (min-width: 992px){
+.THIS .container, .THIS .container-lg,.THIS .container-md, .THIS .container-sm {
+    max-width: 960px;
+    }}
+/*@media (min-width: 768px){
+.THIS .container, .THIS .container-md, .THIS .container-sm {
+    max-width: 720px;
+    }} */
+@media (min-width: 576px){
+.THIS.container, .THIS .container-sm {
+    max-width: 540px;
+    }}
+.THIS .container,.THIS .container-fluid,.THIS .container-lg,.THIS .container-md,.THIS .container-sm,.THIS .container-xl {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+.THIS .row {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+}
+.THIS footer#footer .bottom .copyright {
+    font-size: 13px !important;
+}
+@media (min-width: 768px){
+.THIS .col-md-3 {
+    -ms-flex: 0 0 25%;
+    flex: 0 0 25%;
+    max-width: 25%;
+    }}
+.THIS .col, .THIS .col-1, .THIS .col-10, .THIS .col-11, 
+.THIS .col-12, .THIS .col-2, .THIS .col-3, .THIS .col-4, 
+.THIS .col-5, .THIS .col-6, .THIS .col-7, .THIS .col-8, .THIS .col-9, .THIS .col-auto, 
+.THIS .col-lg, .THIS .col-lg-1, .THIS .col-lg-10, .THIS .col-lg-11, .THIS .col-lg-12, 
+.THIS .col-lg-2, .THIS .col-lg-3, .THIS .col-lg-4, .THIS .col-lg-5, .THIS .col-lg-6, 
+.THIS .col-lg-7, .THIS .col-lg-8, .THIS .col-lg-9, .THIS .col-lg-auto, .THIS .col-md, 
+.THIS .col-md-1, .THIS .col-md-10, .THIS .col-md-11, .THIS .col-md-12, .THIS .col-md-2, 
+.THIS .col-md-3, .THIS .col-md-4, .THIS .col-md-5, .THIS .col-md-6, .THIS .col-md-7, 
+.THIS .col-md-8, .THIS .col-md-9, .THIS .col-md-auto, .THIS .col-sm, .THIS .col-sm-1, 
+.THIS .col-sm-10, .THIS .col-sm-11, .THIS .col-sm-12, .THIS .col-sm-2, .THIS .col-sm-3, 
+.THIS .col-sm-4, .THIS .col-sm-5, .THIS .col-sm-6, .THIS .col-sm-7, .THIS .col-sm-8, 
+.THIS .col-sm-9, .THIS .col-sm-auto, .THIS .col-xl, .THIS .col-xl-1, .THIS .col-xl-10, 
+.THIS .col-xl-11, .THIS .col-xl-12, .THIS .col-xl-2, .THIS .col-xl-3, .THIS .col-xl-4, 
+.THIS .col-xl-5, .THIS .col-xl-6, .THIS .col-xl-7, .THIS .col-xl-8, .THIS .col-xl-9, 
+.THIS .col-xl-auto {
+    position: relative;
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+.THIS .fa {
+    display: inline-block;
+    font: normal normal normal 14px / 1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.THIS p {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+
+@media (min-width: 768px){
+.THIS .col-md-6 {
+    -ms-flex: 0 0 50%;
+    flex: 0 0 50%;
+    max-width: 50%;
+}
+}

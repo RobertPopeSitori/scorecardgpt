@@ -1,0 +1,515 @@
+<!--
+ - Created by cmudd on 2019-05-31.
+ -->
+
+<aura:component description="FS_NewUserRegistrationForm" controller="FS_NewUserRegistrationController">
+    <aura:attribute name="accountSelection"
+                    type="String"
+                    description="the Account ID to associate the Contact with "/>
+    <aura:attribute name="workEmail"
+                    type="String"
+                    description="the work email of the registering user"/>
+    <aura:attribute name="loaded"
+                    type="Boolean"
+                    default="false"
+                    description="Changed true after content is done loading"/>
+    <aura:attribute name="showSpinner"
+                    type="Boolean"
+                    description="Set to false after the form data has finished loading"/>
+    <aura:attribute name="onlyOneAccount"
+                    type="Boolean"
+                    default="false"
+                    description="true if only one account is found so that the text box is found"/>
+    <aura:attribute name="accountSelectionName"
+                    type="String"
+                    description="the name of the selected account for cases where only one account has the domain"/>
+    <aura:attribute name="selfRegistrationEnabled" type="Boolean"
+                    description="true if the user is self registering"/>
+    <aura:attribute name="hasOrg" type="Boolean" default="false"
+                    description="Hides the form fields for account information unless checked"/>
+    <aura:attribute name="showError" type="Boolean" required="true" description="" default="false" access="public"/>
+    <aura:attribute name="errorMessage" type="String" required="false" description="" access="public"/>
+    <aura:attribute name="doneRegistration" type="Boolean"
+                    description="changed true when done registering so the appropriate component can be rendered"/>
+    <aura:attribute name="passwordRules" type="String"
+                    description="The password rules to be displayed to the registering user"/>
+    <aura:attribute name="adminId" type="String"
+                    description="The admin ID to assign the Contact as the OwnerID"/>
+    <aura:attribute name="defaultRetUrl" type="String" required="true"
+                    description="The default ret URL after finishing registration"/>
+    <aura:attribute name="selfRegisterAccountId" type="String"
+                    description="the ID of the Self-Registration Account used for new users in Salesforce"/>
+    <aura:attribute name="errorMethodCount" type="Map" default="{}"/>
+    <aura:attribute name="labels" type="Map" default="{}" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler event="aura:waiting" action="{!c.showSpinner}"/>
+    <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}"/>
+
+
+    <div class="slds-grid slds-align_absolute-center slds-p-around_small">
+        <lightning:card class="slds-size--2-of-3 ">
+            <!--            <aura:if isTrue="{!v.showSpinner}">-->
+            <!--                <lightning:spinner alternativeText="Loading ..."/>-->
+            <!--            </aura:if>-->
+            <lightning:notificationsLibrary aura:id="notifLib"/>
+            <lightning:recordEditForm aura:id="form"
+                                      objectApiName="Contact"
+                                      onerror="{!c.handleError}"
+                                      onsubmit="{!c.handleSubmit}"
+                                      onsuccess="{!c.handleSuccess}">
+
+                <lightning:messages/>
+                <!--                    <aura:if isTrue="{!!v.accountsFound}">-->
+                <!--                        <div class="slds-grid&#45;&#45;align-center slds-align_absolute-center">-->
+                <!--                            <div class="slds-grid&#45;&#45;align-center slds-align_absolute-center slds-m-around&#45;&#45;x-small slds-col slds-size_2-of-3">-->
+                <!--                                <lightning:inputField fieldName="FS_Organization_Name__c" class="slds-grow slds-wrap"/>-->
+                <!--                            </div>-->
+                <!--                            &lt;!&ndash;                    <div class="slds-grid&#45;&#45;align-center slds-align_absolute-center slds-m-around&#45;&#45;x-small slds-col slds-size_1-of-3">&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                        <lightning:inputField fieldName="LastName"/>&ndash;&gt;-->
+                <!--                            &lt;!&ndash;                    </div>&ndash;&gt;-->
+                <!--                        </div>-->
+                <!--                    </aura:if>-->
+<!--                Only 1 account: {!v.onlyOneAccount} <br/>-->
+<!--                self reg: {!v.selfRegistrationEnabled}<br/>-->
+<!--                account selection: {!v.accountSelection}<br/>-->
+<!--                account selection name: {!v.accountSelectionName}<br/>-->
+                <aura:if isTrue="{!v.selfRegistrationEnabled}">
+                    <div class="slds-text-heading_small slds-grid_align-center slds-grid slds-align_absolute-center">
+                        <lightning:helptext
+                                content="If this is not your Org, please contact OLC."/>
+                        <lightning:input label="Are you with an Organization?"
+                                         type="checkbox"
+                                         class="slds-p-left--xx-small"
+                                         onchange="{!c.toggleHasOrg}"/>
+                    </div>
+                </aura:if>
+                <aura:if isTrue="{!and(v.hasOrg, v.selfRegistrationEnabled)}">
+                    <div class="slds-text-heading_small slds-grid_align-center slds-grid slds-align_absolute-center slds-p-around--small">
+                        Tell us about your company
+                    </div>
+
+                    <div class="slds-grid--align-center slds-align_absolute-center slds-wrap">
+                        <abbr title="required" class="slds-required" style="position:relative; left:6px;">*</abbr>
+                        <div class="slds-form-element__label slds-m-around--xx-small slds-col slds-size_1-of-4">
+                            <label for="FS_Self_Reg_Account_Name__c"
+                                   class="slds-text-body_regular">Organization Name</label>
+                        </div>
+                        <div class="slds-form-element__control slds-grid--align-center slds-align_absolute-center slds-m-around--xx-small slds-col slds-size_1-of-2">
+                            <lightning:inputField aura:id="orgName"
+                                                  onchange="{!c.callAddErrorToElement}"
+                                                  fieldName="FS_Self_Reg_Account_Name__c"
+                                                  variant="label-hidden"
+                                                  class="slds-grow slds-wrap"/>
+                        </div>
+                    </div>
+                    <div class="slds-align_absolute-center incompleteFieldErrorParent" style="margin-bottom: 20px">
+                        <div aura:id="FS_Self_Reg_Account_Name__cError" data-help-message="true" role="alert"
+                             class="slds-form-element__help slds-size--3-of-4 slds-has-error slds-hide incompleteFieldError" style="margin-bottom: 0px">
+                            Complete this field.
+                        </div>
+                    </div>
+                    <div class="slds-grid--align-center slds-align_absolute-center slds-wrap">
+                        <abbr title="required" class="slds-required" style="position:relative; left:6px;">*</abbr>
+                        <div class="slds-m-around--xx-small slds-col slds-size_1-of-4">
+                            <label for="FS_Self_Reg_Org_Type__c"
+                                   class="slds-form-element__label">Organization Type</label>
+                        </div>
+                        <div class="slds-grid--align-center slds-align_absolute-center slds-m-around--xx-small slds-col slds-size_1-of-2">
+                            <lightning:inputField aura:id="type"
+                                                  onchange="{!c.callAddErrorToElement}"
+                                                  fieldName="FS_Self_Reg_Org_Type__c"
+                                                  variant="label-hidden"
+                                                  class="slds-grow slds-wrap"/>
+                        </div>
+                    </div>
+                    <div class="slds-align_absolute-center incompleteFieldErrorParent" style="margin-bottom: 20px;">
+                        <div aura:id="FS_Self_Reg_Org_Type__cError" data-help-message="true" role="alert"
+                             class="slds-form-element__help slds-size--3-of-4 slds-has-error slds-hide incompleteFieldError" style="margin-bottom: 0px">
+                            Complete this field.
+                        </div>
+                    </div>
+                    <div class="slds-align_absolute-center">
+                        <abbr title="required" class="slds-required" style="position:relative; left:6px;">*</abbr>
+                        <div class="slds-m-around--xx-small slds-col slds-size_1-of-4">
+                            <label for="FS_Self_Reg_Sub_Org_Type__c"
+                                   class="slds-form-element__label">Institution Type</label>
+                        </div>
+                        <div class="slds-grid--align-center slds-align_absolute-center slds-m-around--xx-small slds-col slds-size_1-of-2">
+                            <lightning:inputField aura:id="subType"
+                                                  onchange="{!c.callAddErrorToElement}"
+                                                  fieldName="FS_Self_Reg_Sub_Org_Type__c"
+                                                  variant="label-hidden"
+                                                  class="slds-grow slds-wrap"/>
+                        </div>
+                    </div>
+                    <div class="slds-align_absolute-center incompleteFieldErrorParent" style="margin-bottom: 20px">
+                        <div aura:id="FS_Self_Reg_Sub_Org_Type__cError" data-help-message="true" role="alert"
+                             class="slds-form-element__help slds-size--3-of-4 slds-has-error slds-hide incompleteFieldError" style="margin-bottom: 0px">
+                            Complete this field.
+                        </div>
+                    </div>
+                    <div class="slds-align_absolute-center">
+                        <abbr title="required" class="slds-required" style="position:relative; left:6px;">*</abbr>
+                        <div class="slds-m-around--xx-small slds-col slds-size_1-of-4">
+                            <label for="FS_Self_Reg_Account_Country__c"
+                                   class="slds-form-element__label">Country</label>
+                        </div>
+                        <div class="slds-grid--align-center slds-align_absolute-center slds-m-around--xx-small slds-col slds-size_1-of-2">
+                            <lightning:inputField aura:id="country"
+                                                  onchange="{!c.callAddErrorToElement}"
+                                                  fieldName="FS_Self_Reg_Account_Country__c"
+                                                  variant="label-hidden"
+                                                  class="slds-grow slds-wrap"/>
+                        </div>
+                    </div>
+                    <div class="slds-align_absolute-center incompleteFieldErrorParent" style="margin-bottom: 20px">
+                        <div aura:id="FS_Self_Reg_Account_Country__cError" data-help-message="true" role="alert"
+                             class="slds-form-element__help slds-size--3-of-4 slds-has-error slds-hide incompleteFieldError" style="margin-bottom: 0px">
+                            Complete this field.
+                        </div>
+                    </div>
+                    <div class="slds-align_absolute-center">
+                        <div class="slds-m-around--xx-small slds-col slds-size_1-of-4">
+                            <label for="FS_Self_Reg_Account_Street__c"
+                                   class="slds-form-element__label">Street</label>
+                        </div>
+                        <div class="slds-grid--align-center slds-align_absolute-center slds-m-around--xx-small slds-col slds-size_1-of-2">
+                            <lightning:inputField aura:id="street"
+                                                  fieldName="FS_Self_Reg_Account_Street__c"
+                                                  variant="label-hidden"
+                                                  class="slds-grow slds-wrap"/>
+                        </div>
+                    </div>
+                    <div class="slds-align_absolute-center">
+                        <div class="slds-m-around--xx-small slds-col slds-size_1-of-4">
+                            <label for="FS_Self_Reg_Account_City__c"
+                                   class="slds-form-element__label">City</label>
+                        </div>
+                        <div class="slds-grid--align-center slds-align_absolute-center slds-m-around--xx-small slds-col slds-size_1-of-2">
+                            <lightning:inputField aura:id="city"
+                                                  fieldName="FS_Self_Reg_Account_City__c"
+                                                  variant="label-hidden"
+                                                  class="slds-grow slds-wrap"/>
+                        </div>
+                    </div>
+                    <div class="slds-align_absolute-center">
+                        <abbr title="required" class="slds-required" style="position:relative; left:6px;">*</abbr>
+                        <div class="slds-m-around--xx-small slds-col slds-size_1-of-4">
+                            <label for="FS_Self_Reg_Account_State__c"
+                                   class="slds-form-element__label">State</label>
+                        </div>
+                        <div class="slds-grid--align-center slds-align_absolute-center slds-m-around--xx-small slds-col slds-size_1-of-2">
+                            <lightning:inputField aura:id="state"
+                                                  onchange="{!c.callAddErrorToElement}"
+                                                  fieldName="FS_Self_Reg_Account_State__c"
+                                                  variant="label-hidden"
+                                                  class="slds-grow slds-wrap"/>
+                        </div>
+                    </div>
+                    <div class="slds-align_absolute-center incompleteFieldErrorParent" style="margin-bottom: 20px">
+                        <div aura:id="FS_Self_Reg_Account_State__cError" data-help-message="true" role="alert"
+                             class="slds-form-element__help slds-size--3-of-4 slds-has-error slds-hide incompleteFieldError" style="margin-bottom: 0px">
+                            Complete this field.
+                        </div>
+                    </div>
+                    <div class="slds-align_absolute-center">
+                        <div class="slds-m-around--xx-small slds-col slds-size_1-of-4">
+                            <label for="FS_Self_Reg_Account_Zip_Code__c"
+                                   class="slds-form-element__label">Zip Code</label>
+                        </div>
+                        <div class="slds-grid--align-center slds-align_absolute-center slds-m-around--xx-small slds-col slds-size_1-of-2">
+                            <lightning:inputField aura:id="zipCode"
+                                                  fieldName="FS_Self_Reg_Account_Zip_Code__c"
+                                                  variant="label-hidden"
+                                                  class="slds-grow slds-wrap"/>
+                        </div>
+                    </div>
+                    <div class="slds-align_absolute-center">
+                        <div class="slds-m-around--xx-small slds-col slds-size_1-of-4">
+                            <label for="FS_Self_Reg_Account_Website__c"
+                                   class="slds-form-element__label">Website</label>
+                        </div>
+                        <div class="slds-grid--align-center slds-align_absolute-center slds-m-around--xx-small slds-col slds-size_1-of-2">
+                            <lightning:inputField aura:id="webUrl"
+                                                  fieldName="FS_Self_Reg_Account_Website__c"
+                                                  variant="label-hidden"
+                                                  class="slds-grow slds-wrap"/>
+                        </div>
+                    </div>
+                </aura:if>
+                <div class="slds-text-heading--small slds-grid_align-center slds-grid slds-align_absolute-center slds-p-around--small">
+                    Tell us about yourself
+                </div>
+                <aura:if isTrue="{!and(v.onlyOneAccount, !v.selfRegistrationEnabled)}">
+                    <!--                    <div class="slds-text-heading_small slds-grid_align-center slds-grid slds-align_absolute-center slds-p-around&#45;&#45;small">-->
+                    <!--                        This is the company we found using your work email's domain-->
+                    <!--                    </div>-->
+                    <div class="slds-grid--align-center slds-align_absolute-center" style="margin-bottom: 5px">
+                        <div style="text-align: left; padding-left: 13px;" class="slds-form-element__label slds-m-around--xx-small slds-col slds-size_1-of-4">
+                            <label for="FS_Self_Reg_Account_Name__c"
+                                   class="slds-text-body_regular">Organization Name</label>
+                        </div>
+                        <div class="slds-form-element__control slds-grid--align-center slds-align_absolute-center slds-m-around--xx-small slds-col slds-size_1-of-2">
+                            <lightning:inputField aura:id="orgName"
+                                                  disabled="true"
+                                                  fieldName="FS_Self_Reg_Account_Name__c"
+                                                  variant="label-hidden"
+                                                  value="{!v.accountSelectionName}"
+                                                  class="slds-grow slds-wrap"/>
+                        </div>
+                        <!--                    <div class="slds-grid&#45;&#45;align-center slds-align_absolute-center slds-m-around&#45;&#45;x-small slds-col slds-size_1-of-3">-->
+                        <!--                        <lightning:inputField fieldName="LastName"/>-->
+                        <!--                    </div>-->
+                    </div>
+                </aura:if>
+                <div class="slds-align_absolute-center">
+                    <div class="slds-align_absolute-center slds-m-around--xx-small slds-col slds-size_3-of-4" style="margin-top:10px;margin-left: 15px">
+                        <lightning:inputField fieldName="OrderApi__Work_Email__c"
+                                              value="{!v.workEmail}"
+                                              variant="label-inline"
+                                              disabled="true" class="slds-grow slds-wrap"/>
+                    </div>
+                </div>
+                <div class="slds-align_absolute-center">
+                    <div class="slds-align_absolute-center slds-m-around--xx-small slds-col slds-size_3-of-4"
+                         onfocusout="{!c.callAddErrorToChildElement}" tabindex="0">
+                        <abbr title="required" class="slds-required"
+                              style="position:relative; left:4px; bottom:7px;">*</abbr>
+                        <lightning:inputField aura:id="required"
+                                              fieldName="FirstName"
+                                              onchange="{!c.callAddErrorToElement}"
+                                              class="slds-grow"
+                                              variant="label-inline"/>
+                    </div>
+                </div>
+                <div class="slds-align_absolute-center incompleteFieldErrorParent">
+                    <div aura:id="FirstNameError" data-help-message="true" role="alert"
+                         class="slds-form-element__help slds-size--3-of-4 slds-has-error slds-hide incompleteFieldError">
+                        Complete this field.
+                    </div>
+                </div>
+
+                <div class="slds-align_absolute-center">
+                    <div class="slds-align_absolute-center slds-m-around--xx-small slds-col slds-size_3-of-4">
+                        <lightning:inputField aura:id="required"
+                                              fieldName="LastName"
+                                              class="slds-grow"
+                                              variant="label-inline"/>
+                    </div>
+                </div>
+                <div class="slds-align_absolute-center">
+                    <div class="slds-align_absolute-center slds-m-around--xx-small slds-col slds-size_3-of-4"
+                         onfocusout="{!c.callAddErrorToChildElement}">
+                        <abbr title="required" class="slds-required"
+                              style="position:relative; left:4px; bottom:7px;">*</abbr>
+                        <lightning:inputField aura:id="required"
+                                              fieldName="Title"
+                                              onchange="{!c.callAddErrorToElement}"
+                                              class="slds-grow"
+                                              variant="label-inline"/>
+                    </div>
+                </div>
+                <div class="slds-align_absolute-center incompleteFieldErrorParent">
+                    <div aura:id="TitleError" data-help-message="true" role="alert"
+                         class="slds-form-element__help slds-size--3-of-4 slds-has-error slds-hide incompleteFieldError">
+                        Complete
+                        this field.
+                    </div>
+                </div>
+                <div class="slds-align_absolute-center">
+                    <div class="slds-align_absolute-center slds-m-around--xx-small slds-col slds-size_3-of-4"
+                         onfocusout="{!c.callAddErrorToChildElement}">
+                        <abbr title="required" class="slds-required"
+                              style="position:relative; left:4px; bottom:7px;">*</abbr>
+                        <lightning:inputField aura:id="mailingCountry"
+                                              fieldName="FS_Mailing_Country__c"
+                                              onchange="{!c.callAddErrorToElement}"
+                                              class="slds-grow"
+                                              variant="label-inline"
+                                              value=""/>
+                    </div>
+                </div>
+                <div class="slds-align_absolute-center incompleteFieldErrorParent">
+                    <div aura:id="FS_Mailing_Country__cError" data-help-message="true" role="alert"
+                         class="slds-form-element__help slds-size--3-of-4 slds-has-error slds-hide incompleteFieldError">
+                        Complete this field.
+                    </div>
+                </div>
+                <!--                <div class="slds-align_absolute-center">-->
+                <!--                    <div class="slds-align_absolute-center slds-m-around&#45;&#45;xx-small slds-col slds-size_3-of-4">-->
+                <!--                        <lightning:inputField fieldName="MailingStreet" -->
+                <!--                                              class="slds-grow" -->
+                <!--                                              variant="label-inline"/>-->
+                <!--                    </div>-->
+                <!--                </div>-->
+                <!--                <div class="slds-align_absolute-center">-->
+                <!--                    <div class="slds-align_absolute-center slds-m-around&#45;&#45;xx-small slds-col slds-size_3-of-4">-->
+                <!--                        <lightning:inputField fieldName="MailingCity" -->
+                <!--                                              class="slds-grow" -->
+                <!--                                              variant="label-inline"/>-->
+                <!--                    </div>-->
+                <!--                </div>-->
+                <div class="slds-align_absolute-center">
+                    <div class="slds-align_absolute-center slds-m-around--xx-small slds-col slds-size_3-of-4"
+                         onfocusout="{!c.callAddErrorToChildElement}">
+                        <abbr title="required" class="slds-required"
+                              style="position:relative; left:4px; bottom:7px;">*</abbr>
+                        <lightning:inputField aura:id="mailingState"
+                                              fieldName="FS_Mailing_State__c"
+                                              onchange="{!c.callAddErrorToElement}"
+                                              class="slds-grow"
+                                              variant="label-inline"
+                                              value=""/>
+                    </div>
+                </div>
+                <div class="slds-align_absolute-center incompleteFieldErrorParent">
+                    <div aura:id="FS_Mailing_State__cError" data-help-message="true" role="alert"
+                         class="slds-form-element__help slds-size--3-of-4 slds-has-error slds-hide incompleteFieldError">
+                        Complete this field.
+                    </div>
+                </div>
+                <!--                <div class="slds-align_absolute-center">-->
+                <!--                    <div class="slds-align_absolute-center slds-m-around&#45;&#45;xx-small slds-col slds-size_3-of-4">-->
+                <!--                        <lightning:inputField fieldName="MailingPostalCode" -->
+                <!--                                              class="slds-grow"-->
+                <!--                                              variant="label-inline"/>-->
+                <!--                    </div>-->
+                <!--                </div>-->
+                <div class="slds-align_absolute-center">
+                    <div class="slds-align_absolute-center slds-m-around--x-small slds-col slds-size_3-of-4">
+                        <abbr title="required" class="slds-required"
+                              style="position:relative; left:4px; bottom:7px;">*</abbr>
+                        <lightning:inputField fieldName="FS_Industry_Type__c"
+                                              aura:id="required"
+                                              onchange="{!c.callAddErrorToElement}"
+                                              variant="label-inline"
+                                              class="slds-grow"
+                                              value=""/>
+                    </div>
+                </div>
+                <div class="slds-align_absolute-center incompleteFieldErrorParent">
+                    <div aura:id="FS_Industry_Type__cError" data-help-message="true" role="alert"
+                         class="slds-form-element__help slds-size--3-of-4 slds-has-error slds-hide incompleteFieldError">
+                        Complete this field.
+                    </div>
+                </div>
+                <div class="slds-align_absolute-center">
+                    <div class="slds-align_absolute-center slds-m-around--x-small slds-col slds-size_3-of-4"
+                         onfocusout="{!c.callAddErrorToChildElement}">
+                        <abbr title="required" class="slds-required"
+                              style="position:relative; left:4px; bottom:7px;">*</abbr>
+                        <lightning:inputField aura:id="required"
+                                              fieldName="FS_Job_Role__c"
+                                              onchange="{!c.callAddErrorToElement}"
+                                              variant="label-inline"
+                                              class="slds-grow"
+                                              value=""/>
+                    </div>
+                </div>
+                <div class="slds-align_absolute-center incompleteFieldErrorParent">
+                    <div aura:id="FS_Job_Role__cError" data-help-message="true" role="alert"
+                         class="slds-form-element__help slds-size--3-of-4 slds-has-error slds-hide incompleteFieldError">
+                        Complete this field.
+                    </div>
+                </div>
+                <div class="slds-align_absolute-center">
+                    <div class="slds-align_absolute-center slds-m-around--x-small slds-col slds-size_3-of-4"
+                         onfocusout="{!c.callAddErrorToChildElement}">
+                        <abbr title="required" class="slds-required"
+                              style="position:relative; left:4px; bottom:7px;">*</abbr>
+                        <lightning:inputField aura:id="required"
+                                              fieldName="FS_Job_Function__c"
+                                              onchange="{!c.callAddErrorToElement}"
+                                              variant="label-inline"
+                                              class="slds-grow"
+                                              value=""/>
+                    </div>
+                </div>
+                <div class="slds-align_absolute-center incompleteFieldErrorParent">
+                    <div aura:id="FS_Job_Function__cError" data-help-message="true" role="alert"
+                         class="slds-form-element__help slds-size--3-of-4 slds-has-error slds-hide incompleteFieldError">
+                        Complete this field.
+                    </div>
+                </div>
+                <div class="slds-text-heading_small slds-grid_align-center slds-grid slds-align_absolute-center slds-p-around--small">
+                    Set your communication preferences
+                </div>
+                <div class="slds-grid--align-center slds-align_absolute-center">
+                    <div class="slds-grid--align-center slds-align_absolute-center slds-m-around--xx-small slds-col slds-size_3-of-4">
+                        <lightning:inputField fieldName="FS_OLC_Today_Newsletter__c"
+                                              class="slds-grow slds-wrap"/>
+                        <lightning:inputField fieldName="FS_Institute_Update_Newsletters__c"
+                                              class="slds-grow slds-wrap"/>
+                    </div>
+                </div>
+                <div class="slds-grid--align-center slds-align_absolute-center">
+                    <div class="slds-grid--align-center slds-align_absolute-center slds-m-around--xx-small slds-col slds-size_3-of-4">
+                        <lightning:inputField fieldName="FS_OLC_Conference_Updates__c"
+                                              class="slds-grow slds-wrap"/>
+                        <lightning:inputField fieldName="FS_Special_Announcements_Opportunities__c"
+                                              class="slds-grow slds-wrap"/>
+                    </div>
+                </div>
+                <div class="slds-grid--align-center slds-align_absolute-center">
+                    <div class="slds-grid--align-center slds-align_absolute-center slds-m-around--xx-small slds-col slds-size_3-of-4">
+                        <lightning:inputField fieldName="FS_Webinars_Offers_sent_by_OLC_on_behalf__c"
+                                              class="slds-grow slds-wrap"/>
+                        <lightning:inputField fieldName="FS_Sponsor_Opportunities_and_Updates__c"
+                                              class="slds-grow slds-wrap"/>
+                    </div>
+                </div>
+                <div class="slds-grid--align-center slds-align_absolute-center">
+                    <div class="slds-grid--align-center slds-align_absolute-center slds-m-around--xx-small slds-col slds-size_3-of-4">
+                        <lightning:inputField fieldName="FS_Professional_Membership_Newsletter__c"
+                                              class="slds-grow slds-wrap"/>
+                        <lightning:inputField fieldName="FS_Institutional_Members_Newsletter__c"
+                                              class="slds-grow slds-wrap"/>
+                    </div>
+                </div>
+                <div class="slds-grid--align-center slds-align_absolute-center">
+                    <div class="slds-grid--align-center slds-align_absolute-center slds-m-around--xx-small slds-col slds-size_3-of-4">
+                        <lightning:inputField fieldName="FS_Leadership_in_Online_Digital_Learning__c"
+                                              class="slds-grow slds-wrap"/>
+                        <lightning:inputField fieldName="FS_Instructional_Design_Interests__c"
+                                              class="slds-grow slds-wrap"/>
+                    </div>
+                </div>
+
+                <!--                <aura:if isTrue="{!and(v.onlyOneAccount, v.selfRegistrationEnabled)}">-->
+                <!--                <aura:if isTrue="{!v.onlyOneAccount}">-->
+                <div class="slds-align_absolute-center slds-form-element__help slds-p-top--medium slds-size_3-of-4">
+                    <ui:outputText value="{!v.passwordRules}"/>
+                </div>
+                <div class="slds-grid--align-center slds-align_absolute-center slds-p-top--xxx-small">
+                    <div class="slds-grid--align-center slds-align_absolute-center slds-m-around--xx-small slds-size_10-of-12">
+                        <lightning:input aura:id="password"
+                                         required="true"
+                                         name="password"
+                                         label="Password"
+                                         variant="label-inline"
+                                         type="password"
+                                         class="slds-size--3-of-4 slds-align_absolute-center slds-grow"/>
+                    </div>
+                </div>
+
+                <!--                <div class="slds-grid&#45;&#45;align-center slds-align_absolute-center">-->
+                <!--                    <div class="slds-grid&#45;&#45;align-center slds-align_absolute-center slds-m-around&#45;&#45;x-small slds-size_7-of-12">-->
+                <!--                        <lightning:input aura:id="retypePassword"-->
+                <!--                                         required="true"-->
+                <!--                                         name="retypePassword"-->
+                <!--                                         label="Retype Password"-->
+                <!--                                         type="password"-->
+                <!--                                         class="slds-size&#45;&#45;3-of-4 slds-align_absolute-center slds-grow"/>-->
+                <!--                    </div>-->
+                <!--                </div>-->
+                <!--                </aura:if>-->
+                <div class="slds-grid slds-grid_align-spread slds-grid_align-end slds-p-right--x-small">
+                    <lightning:button class="slds-m-top_small slds-button--brand" type="submit"
+                                      label="Register"/>
+                </div>
+            </lightning:recordEditForm>
+        </lightning:card>
+    </div>
+    <div class="slds-p-around--medium"></div>
+</aura:component>

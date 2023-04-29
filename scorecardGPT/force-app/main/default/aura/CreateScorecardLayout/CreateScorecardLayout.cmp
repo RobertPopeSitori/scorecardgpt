@@ -1,0 +1,38 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" 
+                access="global" controller="CreateScorecardLayout">
+    <aura:attribute name="fields" type="String[]" default="['Status__c', 'Title__c','Organization__c','Description__c']" />
+    <aura:attribute name="hidefields" type="String[]" default="['ParentId']" />
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="TemplateId" type="String"/>
+    <aura:attribute name="temp" type="Scorecard_Template__c[]"/>
+    <aura:attribute name="selectedValue" type="String"/>
+    
+    <aura:attribute name="isNewRecordCreated" type="Boolean" default='false'/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="scorecardTemplateEvent" event="c:ScorecardTemplateEvent" action="{!c.handleMyComponentEvent}"/>
+    <aura:registerEvent name="createScorecardLayoutEvent" type="c:CreateScorecardLayoutEvent"/>      
+    <lightning:notificationsLibrary aura:id="notificationsLibrary"/>
+    <lightning:card iconName="custom:custom48" title="Create Scorecard">
+        
+        <!--<c:ScorecardTemplateLookup aura:id="lookupComp" />-->
+        
+       <lightning:select name="select" label="Template" required="true" value="{!v.selectedValue}">
+           <option text="--None--"></option>
+            <aura:iteration items="{!v.temp}" var="tem">
+                <option text="{!tem.Name}" value="{!tem.Id}"></option>
+            </aura:iteration>
+        </lightning:select>
+        
+        <lightning:recordForm
+                              recordId="{!v.recordId}"
+                              objectApiName="Scorecard__c"
+                              fields="{!v.fields}"
+                              onsubmit="{!c.handleSubmit}"
+                              onsuccess="{!c.handleOnSuccess}"
+                              onerror="{!c.handleOnError}"
+                              aura:id="myRecordForm">
+            
+            
+        </lightning:recordForm>
+    </lightning:card>
+</aura:component>

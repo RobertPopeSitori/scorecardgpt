@@ -1,0 +1,49 @@
+<aura:component controller="relatedcontactrole" implements="flexipage:availableForRecordHome,force:hasRecordId" access="global">
+    <!-- Imports -->
+   
+    <!-- attributes -->
+    <aura:attribute name="data" type="AccountContactRelation"/>
+    <aura:attribute name="columns" type="List"/>
+<aura:attribute name="recordId" type="String"/>
+    <!-- handlers-->
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+
+
+    <!-- the container element determine the height of the datatable -->
+    <!--div style="height: 100px">
+        <lightning:datatable
+                keyField="id"
+                data="{!v.data }"
+                columns="{!v.columns }"
+                hideCheckboxColumn="true"/>
+    </div!-->
+ <div style="overflow-x:auto;overflow-y:auto;">
+<table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+    <thead >
+   <tr class="slds-line-height_reset"><td scope="col" >
+        <div class="slds-truncate" title="Name"> Contact Name </div>
+    </td>
+    <td scope="col">
+        <div class="slds-truncate" title="Role"> Role</div>
+       </td></tr>
+    </thead>
+    <tbody>
+    <aura:iteration items="{!v.data}" var="td">
+        <tr>
+        <th data-label="Contact Name">
+            <div class="slds-truncate" title="{!td.contactname__c}"><a href="{!'/'+ td.ContactId+ ''}" target="_blank">{!td.contactname__c}</a></div>
+            
+            </th>
+               <th data-label="Roles">
+              <div class="slds-truncate" title="{!td.Roles}">{!td.Roles}</div>
+            </th>
+        </tr>
+        </aura:iteration>
+    </tbody>
+     
+     </table>       
+    </div>
+
+
+
+</aura:component>

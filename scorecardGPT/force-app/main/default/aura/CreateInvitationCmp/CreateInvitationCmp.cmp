@@ -1,0 +1,130 @@
+<aura:component controller="createInvitationController"  implements="force:appHostable,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" access="global">
+    <!--use boolean attribute for Store true/false value,
+    make default to "false" so modal box are not display on the load of component. 
+    -->
+    <aura:attribute name="scorecardId" type="string"></aura:attribute>
+    <!--<aura:attribute name="scorecardId" type="string" default= 'a2yf0000001gwaUAAQ'></aura:attribute>-->
+    <aura:attribute name="ListSection" type="List" />
+    <aura:attribute name="selectedVal" type="List" />
+    <aura:attribute name="isOpen" type="boolean" default="false"/>
+    <aura:attribute name="CourseOverviewAndInformation" type="boolean" />
+    <aura:attribute name="CourseTechnologyAndTool" type="boolean" />
+    <aura:attribute name="DesignAndLayout" type="boolean" />
+    <aura:attribute name="ContentAndActivities" type="boolean" />
+    <aura:attribute name="Interaction" type="boolean" />
+    <aura:attribute name="AssessmentAndFeedback" type="boolean" />
+    <aura:attribute name="firstname" type="string"></aura:attribute>
+    <aura:attribute name="lastname" type="string"></aura:attribute>
+    <aura:attribute name="email" type="string"></aura:attribute>
+    <aura:attribute name="invitationObj" type="Invitation__c" default="{ 'sobjectType': 'Invitation__c'}"/>
+    <aura:attribute name="fields"
+                    type="String[]"
+                    default="['First_Name__c', 'Last_Name__c','Email__c']"/><!--  , 'Role__c'  -->
+    
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="Role" type="string"/>
+    <aura:attribute name="selectedValue" type="String"/>
+    
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    <!--Use "slds-m-around_xx-large" class to add standard X-Large padding to the component--> 
+    <div class="slds-m-around_xx-large">
+        
+        <lightning:button variant="brand"
+                          label="Invite Team Member"
+                          title=""
+                          onclick="{! c.openModel }" />
+        <!--Use aura:if tag to display Model Box, on the bese of conditions. [isOpen boolean attribute] -->   
+        <aura:if isTrue="{!v.isOpen}">
+            
+            <!--###### MODAL BOX Start######--> 
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- ###### MODAL BOX HEADER Start ######-->
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon iconName="utility:close"
+                                              onclick="{! c.closeModel }"
+                                              alternativeText="close"
+                                              variant="bare-inverse"
+                                              class="slds-modal__close"/>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Create new Collaborator</h2>
+                    </header>
+                    <!--###### MODAL BOX BODY Part Start######-->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <div align="Center">
+                            <lightning:select name="select" label="Role" value="{!v.selectedValue}">
+                                <aura:if isTrue="{!v.Role == 'Author'}">
+                                    <option text="--None--"></option>
+                                    <option text="Author" value="Author"></option>
+                                    <option text="Co-Author" value="Co-Author"></option>
+                                    <option text="Observer" value="Observer"></option>
+                                </aura:if>
+                                <aura:if isTrue="{!v.Role == 'Lead Reviewer'}">
+                                    <option text="--None--"></option>
+                                    <option text="Reviewer" value="Reviewer"></option>
+                                    <option text="Consultant" value="Consultant"></option>
+                                </aura:if>
+                            </lightning:select>
+                            <aura:if isTrue="{!v.selectedValue == 'Co-Author'}">
+                                Section Permission
+                                <aura:iteration items="{!v.ListSection}" var="section" indexVar="indx"> 
+                                    <div class="slds-grid slds-grid_horizontal">
+                                        
+                                        <!-- <lightning:input type="checkbox" aura:id="checkbox{!indx}" value="{!section.Id}" label="{!section.Title__c}" ></lightning:input> -->
+                                    <!--    <fieldset class="slds-form-element">
+                                            <legend class="slds-form-element__legend slds-form-element__label"></legend>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-checkbox_button-group">
+                                                    <span class="slds-button slds-checkbox_button">
+                                                        <input type="checkbox" aura:id="checkSection" id="{!section.Title__c}" value="" text="{!section.Title__c}" checked="" name="checkbox" />
+                                                        <label class="slds-checkbox_button__label" for="{!section.Title__c}">
+                                                            <span class="slds-checkbox_faux">{!section.Title__c}</span>
+                                                        </label>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </fieldset> -->
+                                         <ui:inputCheckbox aura:id="checkSection" value="" text="{!section.Title__c}" /> {!section.Title__c} 
+                                      <!--  <fieldset class="slds-form-element">
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-checkbox_button-group">
+                                                    <span class="slds-button slds-checkbox_button">
+                                                        <input type="checkbox" id="{!section.Title__c}" value="{!section.Title__c}" name="checkbox" /> 
+                                                        <label class="slds-checkbox_button__label" for="{!section.Title__c}">
+                                                            <span class="slds-checkbox_faux">{!section.Title__c}</span>
+                                                        </label> 
+                                                    </span>
+                                                </div> 
+                                            </div>
+                                        </fieldset> -->
+                                    </div>
+                                </aura:iteration>
+                                 <aura:set Attribute="else">
+                                    <lightning:outputField  aura:id="checkSection" value="None"></lightning:outputField>
+                                    </aura:set>
+                            </aura:if>
+                        </div>
+                        <lightning:input type="text" value="{!v.firstname}" label="First Name"></lightning:input>
+                        <lightning:input type="text" value="{!v.lastname}" label="Last Name"></lightning:input>
+                        <lightning:input type="text" value="{!v.email}" label="Email"></lightning:input>
+                        <br></br>
+                        <lightning:button label="cancel" variant="brand" onclick="{!c.closeModel}"></lightning:button>
+                        <lightning:button label="Save" variant="brand" onclick="{!c.save}"></lightning:button>
+                        
+                        
+                        <!--    <lightning:recordForm objectApiName="Invitation__c"
+                                              fields="{!v.fields}"
+                                              onsuccess="{!c.handleSuccess}" 
+                                              onerror="{!c.handleError}"/> -->
+                        
+                    </div>
+                    
+                </div>
+                
+            </section>
+            
+            <div class="slds-backdrop slds-backdrop_open"></div>
+            <!--###### MODAL BOX Part END Here ######-->
+        </aura:if>
+    </div>
+</aura:component>

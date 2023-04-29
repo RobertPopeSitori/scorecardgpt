@@ -1,0 +1,89 @@
+<aura:component controller="ScorecardCommentsController" implements="flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global">
+
+    <aura:attribute name="parentType" type="string" default="Scorecard__c"/>
+    <aura:attribute name="parentId" type="string"/>
+    <aura:attribute name="title" type="string" default="Comments"/>
+    <aura:attribute name="numberOfComments" type="integer" default="0"/>
+    <aura:attribute name="canAddNew" type="boolean" default="true" />
+    <aura:attribute name="comments" type="List" />
+    <aura:attribute name="showNewModal" type="boolean" default="false" />
+	<aura:attribute name="isLoading" type="boolean" default="false" />
+    <aura:attribute name="comment" type="string" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.onInit}" />
+    <aura:handler name="change" value="{!v.parentId}" action="{!c.onInit}"/>
+
+    <article class="slds-card slds-card_boundary related_list_card_border_top forceRelatedListCardDesktop">
+        <div class="related_list_themed_border_top"/>
+        <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media--center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                   <lightning:icon iconName="standard:note" size="small" alternativeText="{!v.title}"></lightning:icon>
+                </div>
+                <div class="slds-media__body">
+                    <h2>
+                        <a class="slds-card__header-link baseCard__header-title-container" href="javascript:void(0);">
+                            <span class="slds-card__header-title slds-truncate slds-m-right--xx-small" title="{!v.title}">{!v.title}</span>
+                            <span class="slds-card__header-title slds-shrink-none slds-m-right--xx-small" title="Numnber of Comments"> ({!v.numberOfComments})</span>
+                        </a>
+                    </h2>
+                </div>
+            </header>
+            <aura:if isTrue="{!v.canAddNew}">
+                <div class="slds-no-flex">
+                    <button class="slds-button slds-button--neutral" onclick="{!c.onNewButtonClicked}">New</button>
+                </div>
+            </aura:if>
+        </div>
+        <div class="slds-card__body">
+            <div class="previewMode MEDIUM forceRelatedListPreview">
+                <div class="useHeaderBarFix forceBaseListView forceRelatedListPreviewGrid">
+                    <div class="spinnerWrapper hideSpinner hideEl forceComponentSpinner">
+                        <div class="indicator  hideEl forceInlineSpinner" aria-hidden="true" role="alert"/>
+                    </div>
+                    <div class="hidden forceListViewPlaceholder"/>
+                    <div class="listViewContent">
+                        <div class="scrollable uiScroller scroller-wrapper scroll-bidirectional native" tabindex="-1">
+                            <div class="scroller actionBarPlugin fixedHeaderPlugin">
+								<aura:iteration items="{!v.comments}" var="comment">
+									<div class="olc-container padded10">
+										<div class="olc-container">
+											<b>{!comment.createdBy}</b>&nbsp;&nbsp;&nbsp;&nbsp;( <i>{!comment.createdDate}</i> )
+										</div>
+										<div class="olc-container">
+											{!comment.text}
+										</div>
+									</div>
+                                </aura:iteration>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+
+	<aura:if isTrue="{!v.showNewModal}">
+		<div class="slds">
+			<div class="slds modal">
+
+				<div aura:id="NewCommentModal" role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+					<div class="slds-modal__container">
+						<div class="slds-modal__header">
+							Post a Comment
+						</div>
+						<div class="slds-modal__content slds-p-around--medium">
+							<textarea id="commentField" class="slds-textarea" name="commentField" rows="5"></textarea>
+						</div>
+						<div class="slds-modal__footer">
+							<button class="slds-button slds-button--neutral" onclick="{!c.onCancelClicked}">Cancel</button>
+							<button class="slds-button slds-button--brand mgl-pep-brandbutton" onclick="{!c.onSaveClicked}">Submit</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="slds-backdrop slds-backdrop--open"></div>
+		</div>	
+	</aura:if>
+
+</aura:component>

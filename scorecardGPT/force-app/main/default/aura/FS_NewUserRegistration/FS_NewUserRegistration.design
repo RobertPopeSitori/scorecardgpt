@@ -1,0 +1,14 @@
+<!--
+ - Created by cmudd on 2019-06-05.
+ -->
+
+<design:component>
+    <design:attribute name="defaultRetUrl" label="Default Redirect Url"
+                      description="The default ret URL after finishing registration"/>
+    <design:attribute name="passwordRules" label="Password Rules"
+                      description="The password rules to be displayed to the registering user" />
+    <design:attribute name="adminId" label="Admin ID"
+                      description="The admin ID to assign the Contact as the OwnerID" />
+    <design:attribute name="selfRegisterAccountId" label="Self Registration Account ID"
+                      description="the ID of the Self-Registration Account used for new users in Salesforce" />
+</design:component>

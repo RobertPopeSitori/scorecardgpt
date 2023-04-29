@@ -1,0 +1,15 @@
+<!--
+ - Created by Admin on 19-06-2019.
+ -->
+
+<apex:page id="FS_ValidateJoinProcess" controller="FS_ValidateJoinProcess" action="{!validateJoinProcess}" sidebar="false" showHeader="false" >
+
+    <apex:form >
+
+        <apex:outputlabel value="{!messageforProfessionalMembers}" rendered="{!flag}" escape="false">
+
+        </apex:outputlabel>
+
+    </apex:form>
+
+</apex:page>

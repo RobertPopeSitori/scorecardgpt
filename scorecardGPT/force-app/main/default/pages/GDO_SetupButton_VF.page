@@ -1,0 +1,20 @@
+<apex:page controller="GDO_SetupButton_Ctrl" sidebar="false">
+    
+    <style type="text/css">
+        h1 { color: #00asa;  }
+        { background-color: #fff; }
+        p { font-style: italic; }
+    </style>
+    
+    
+
+  <h1>Press the button below to complete setup of this organization.</h1> <br/>
+  <p>This will fix the URL fields on the Sirte record as well as the related Navigations (Page, Menu Item etc) </p>
+
+  <apex:outputPanel rendered="{!NOT(setupComplete)}" id="displayButtonPanel">
+     <apex:form ><apex:commandButton style="height:30px" action="{!runReplace}" status="replaceStatus" rerender="displayButtonPanel" value="Do it Now! Replace Id and Domain Values" /></apex:form>
+  </apex:outputPanel>
+  <apex:outputText rendered="{!setupComplete}" style="font-weight: bold;"> Setup Complete! </apex:outputText>
+  
+  <apex:actionStatus startText="Please wait...." stopText="" id="replaceStatus"/>
+</apex:page>

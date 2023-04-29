@@ -1,0 +1,74 @@
+<aura:component controller="inviteeDetailsClass" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" >    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <!--<aura:attribute name="invite" type="String"/>
+   <aura:attribute name="invitationId" type="String"/>-->
+    <aura:attribute name="InvitaionRecord" type="Invitation__c"></aura:attribute>
+    <aura:attribute name="ScorecardID" type="string"></aura:attribute>
+    <aura:attribute name="isLoading" type="boolean" default="false"></aura:attribute>
+    <aura:if isTrue="{!v.isLoading}">
+            <lightning:spinner alternativeText="Loading" size="medium" />
+        </aura:if>
+    
+    <!-- 
+    <lightning:layout class="slds-page-header">
+            <img src="{!$Resource.FS_OLCLOGO}" 
+                 alt="{!$Label.c.FS_Alternate_Logo_Url}"
+                 class="image-small"/>
+    </lightning:layout> -->
+    
+    <!-- Body -->
+    <!--<span aura:id="recordId"  hidden="true">{!v.recordId}</span>-->
+    <!--  <lightning:recordViewForm recordId="{!v.invitationId}" objectApiName="Invitation__c"> -->
+    <fieldset class="slds-box slds-theme_default slds-container_medium slds-align_absolute-center slds-m-vertical_xx-large">
+        <legend class="slds-text-heading_large slds-p-vertical_medium">
+            Invitation Details
+        </legend>
+        <div class="slds-grid slds-wrap width-large">
+            <div class="slds-col slds-size_1-of-2 slds-p-vertical_xx-small">
+                <span class="slds-form-element__label ">First Name</span>
+                {!v.InvitaionRecord.First_Name__c}
+            </div>
+            <div class="slds-col slds-size_1-of-2 slds-p-vertical_xx-small">
+                <span class="slds-form-element__label">Last Name</span>
+                {!v.InvitaionRecord.Last_Name__c}
+            </div>
+            <div class="slds-col slds-size_1-of-2 slds-p-vertical_xx-small">
+                <span class="slds-form-element__label">Role</span>
+                {!v.InvitaionRecord.Role__c}
+            </div>
+            <div class="slds-col slds-size_1-of-2 slds-p-vertical_xx-small">
+                <span class="slds-form-element__label">Status</span>
+                {!v.InvitaionRecord.Status__c}
+            </div>
+            <div class="slds-col slds-size_1-of-2 slds-p-vertical_xx-small">
+                <span class="slds-form-element__label">Email</span>
+                {!v.InvitaionRecord.Email__c}
+            </div>
+            <div class="slds-col slds-size_1-of-2 slds-p-vertical_xx-small">
+                <span class="slds-form-element__label" >Invitation Id</span>
+                {!v.InvitaionRecord.Name}
+            </div>
+            
+            <div class="slds-col slds-size_1-of-2 slds-p-vertical_xx-small">
+                <span class="slds-form-element__label" >Scorecard</span>
+                {!v.InvitaionRecord.Scorecard__r.Title__c}
+            </div>                
+            <div class="slds-col slds-size_1-of-2 slds-p-vertical_xx-small">
+                <span class="slds-form-element__label">Invited By</span>
+                {!v.InvitaionRecord.CreatedBy.Name}
+            </div>
+            <!-- Button -->
+            <div class="slds-col slds-size_12-of-12 slds-align_absolute-center slds-p-vertical_x-small">
+                <lightning:button label="Accept Invitation"
+                                  variant="brand"
+                                  onclick="{!c.changeInviteeStatus}"/>
+                <lightning:button label="Decline Invitation"
+                                  variant="brand"
+                                  onclick="{!c.declineInviteeStatus}"/>
+            </div>
+        </div>        
+    </fieldset>
+    <!-- </lightning:recordViewForm> -->
+    
+    <!-- /Body-->
+</aura:component>

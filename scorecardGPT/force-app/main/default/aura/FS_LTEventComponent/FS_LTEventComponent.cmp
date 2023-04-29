@@ -1,0 +1,9 @@
+<!--
+ - Created by daweima on 2019-09-04.
+ -->
+
+<aura:component description="FS_LTEventComponent" implements="forceCommunity:availableForAllPageTypes" controller="FS_LTEventComponentController">
+    <aura:attribute name="endUrlNotLogin" type="Boolean" default="true"/>
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    <PagesApi:FontevaController/>
+</aura:component>

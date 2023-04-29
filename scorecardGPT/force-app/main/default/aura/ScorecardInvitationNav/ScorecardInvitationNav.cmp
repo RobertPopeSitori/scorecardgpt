@@ -1,0 +1,51 @@
+<aura:component controller="scorecardInvitationNav" implements="lightning:isUrlAddressable,forceCommunity:availableForAllPageTypes" access="global" >
+    <aura:attribute name="scorecardId" type="string"></aura:attribute>
+    <aura:attribute name="Invitations" type="Invitation__c[]"></aura:attribute>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <!--<aura:handler name="change" value="{!v.scorecardId}" action="{!c.onInit}" />-->
+    
+    <div class="slds">
+        <div class="slds-text-heading_large slds-text-align_center team-title">Invitations</div>
+        <article class="slds-card">
+            <div class="slds-card__header slds-grid">
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                    <thead>
+                        <tr class="slds-line-height_reset">
+                            <th class="" scope="col">
+                                <div class="slds-truncate" title="Member Name">
+                                    Name
+                                </div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate" title="Designation">Status</div>
+                            </th>
+                            <th class="" scope="col">
+                                <div class="slds-truncate" title="Designation">Invited By</div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <aura:iteration items="{!v.Invitations}" var="invite">
+                            <tr class="slds-hint-parent">
+                                <td data-label="Score">
+                                    <div class="slds-truncate" >
+                                        <!--<a href='https://uat-us-tdm-tso-15eb63ff4c6-1626e-1692b8f2604.cs192.force.com/scorecards/s/detail/'{!invite.Id}>-->
+                                            {!invite.First_Name__c} {!invite.Last_Name__c}
+                                        <!--</a>-->
+                                    </div>
+                                </td>
+                                
+                                <td data-label="Score">
+                                    <div class="slds-truncate"> {!invite.Status__c} </div>
+                                </td>
+                                <td data-label="Score">
+                                    <div class="slds-truncate"> {!invite.CreatedBy.Name} </div>
+                                </td> 
+                            </tr>
+                        </aura:iteration>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+    </div>
+</aura:component>

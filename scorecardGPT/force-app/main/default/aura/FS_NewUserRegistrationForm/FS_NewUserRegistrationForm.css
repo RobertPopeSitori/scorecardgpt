@@ -1,0 +1,30 @@
+/**
+ * Created by cmudd on 2019-05-31.
+ */
+
+.THIS #slds-grow {
+    max-width: 60%;
+}
+
+.THIS .slds-combobox-picklist {
+    text-align: right;
+}
+
+.THIS .incompleteFieldError {
+    color: #c23934;
+    max-height: 100px;
+    margin-bottom: 50px;
+    margin-left: 10px;
+}
+
+.THIS .incompleteFieldErrorParent {
+    max-height: 25px;
+}
+
+/*.THIS #input-43 {*/
+/*    margin-left:5px;*/
+/*}*/
+
+.THIS#body > div > div.slds-grid.slds-align_absolute-center.slds-p-around_small.cFS_NewUserRegistrationForm > article > div > div > form > div:nth-child(7) > div > lightning-input-field > lightning-input > div.slds-form-element__control.slds-grow {
+    margin-left:5px;
+}

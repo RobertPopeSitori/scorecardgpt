@@ -1,0 +1,106 @@
+<aura:component controller="ScorecardSectionListController" implements="lightning:isUrlAddressable,forceCommunity:availableForAllPageTypes" access="global">
+
+    <aura:attribute name="model" type="Object"/>
+    <aura:attribute name="scorecardId" type="string"></aura:attribute>
+    <aura:attribute name="isLoading" type="Boolean" default="true" />
+    <aura:attribute name="scorecardname" type="object"></aura:attribute>
+    <aura:handler name="init" value="{!this}" action="{!c.onInit}" />
+    
+    <div class="slds">
+        <aura:if isTrue="{!v.isLoading}">
+            <lightning:spinner alternativeText="Loading" size="medium" />
+        </aura:if>
+        <lightning:breadcrumbs>
+            <lightning:breadcrumb label="Home" href="/OLC/s/"/>
+            <lightning:breadcrumb label="My Scorecard -" href="/OLC/s/scorecardapp"/>
+            <lightning:breadcrumb label="{!v.scorecardname.Title__c}" href="{!'/OLC/s/scorecard-section?scorecard='+v.scorecardId}"/>
+        </lightning:breadcrumbs>
+        <br></br>
+		<c:ScorecardHeader scorecardId="{!v.scorecardId}" />
+
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_9-of-12">
+
+                <aura:iteration items="{!v.model.sections}" var="section">
+                    <div class="slds-card-wrapper">
+                        <article class="slds-card">
+                            <div class="slds-card__header slds-grid">
+                                <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                    <aura:if isTrue="{!section.isSelected}">
+                                        <div class="slds-media__figure">
+                                            <span class="slds-icon_container" title="section">
+                                                <lightning:icon iconName="utility:down" size="small" />
+                                                <span class="slds-assistive-text">{!section.title}</span>
+                                            </span>
+                                        </div>
+                                        <div class="slds-media__body">
+                                            <a href="{! 'scorecard-section?scorecard=' + v.model.scorecard.id}">
+                                                <h2 class="slds-card__header-title">
+                                                    <span>{!section.title}</span>
+                                                </h2>
+                                            </a>
+                                        </div>
+                                        <aura:set attribute="else">
+                                            <a href="{! 'scorecard-section?scorecard=' + v.model.scorecard.id + '&amp;section=' + section.id}">
+                                                <h2 class="slds-card__header-title">
+                                                    <span>{!section.title}</span>
+                                                </h2>
+                                            </a>
+                                        </aura:set> 
+                                    </aura:if>
+                                </header>
+                            </div>
+                            
+                            <aura:if isTrue="{!section.isSelected}">
+                                <aura:if isTrue="{!section.userCanAccessSection}">
+                                        <div class="slds-card__body slds-card__body_inner" id="section-container">
+                                                <aura:iteration items="{!section.questions}" var="question">
+                                                    <article class="slds-card slds-card_boundary">
+                                                        <div class=" slds-grid">
+                                                            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                                                <div class="slds-media__figure valign-top">
+                                                                    <span class="slds-icon_container slds-icon-standard-contact" title="{!question.question}">
+                                                                        <span class="slds-badge slds-badge_inverse">Q{!question.order}</span>
+                                                                        <span class="slds-assistive-text">{!question.order}</span>
+                                                                    </span>
+                                                                </div>
+                                                                <div class="slds-media__body">
+                                                                    <h2 class="slds-card__header-title">
+                                                                        <span class="slds-cell-wrap">
+																			<aura:unescapedHtml value="{!question.question}" />
+																		</span>
+                                                                    </h2>
+                                                                </div>
+                                                            </header>
+                                                        </div>
+                                                        <div class="slds-card__body slds-card__body_inner">
+                                                            <aura:if isTrue="{!question.answers.length > 0}">
+                                                                <c:ScorecardQuestionAnswerList items="{!question.answers}"></c:ScorecardQuestionAnswerList>
+                                                            </aura:if>
+                                                        </div>
+                                                    </article>
+                                                </aura:iteration>
+                
+                                            </div>
+                                    <aura:set attribute="else">
+                                        <div class="slds-card__body slds-card__body_inner">
+                                            To access this section, please contact the scorecard owner to grant you permission.
+                                        </div>
+                                    </aura:set>
+                                </aura:if>
+                                
+                            </aura:if>
+                        </article>
+                    </div>
+                    <br />
+                </aura:iteration>
+            </div>
+
+            <div class="slds-col slds-size_3-of-12">
+                <c:ScorecardTeamNav scorecardId="{!v.scorecardId}" />
+            </div>
+        </div>
+        <br /><br />
+    </div>
+    
+</aura:component>

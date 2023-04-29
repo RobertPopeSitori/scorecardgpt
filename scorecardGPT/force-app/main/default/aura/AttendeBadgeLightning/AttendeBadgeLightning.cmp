@@ -1,0 +1,7 @@
+<aura:component controller="AttendeeBadgeLightningCLS" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:attribute name="recordId" type="Id"/>
+    <div align="center">
+        <h1>  Please wait...Generating PDF File </h1>
+    </div>
+</aura:component>

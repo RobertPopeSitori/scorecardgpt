@@ -1,0 +1,21 @@
+<apex:page showHeader="false" title="Scheduled Maintenance">
+  <apex:composition template="StdExceptionTemplate">
+    <apex:define name="icon">
+      <apex:image url="{!URLFOR($Resource.SiteSamples, 'img/tools.png')}"/>
+    </apex:define>
+    <apex:define name="error">
+    <!--  <apex:outputText escape="false" styleClass="title" value="{!$Label.site.under_construction}"> -->
+      <apex:outputText escape="false" styleClass="title" value="Scheduled Maintenance">
+        <apex:param value="{!$Site.BaseUrl}"/>
+      </apex:outputText>
+      <br/>
+      <br/>
+    <!--  <apex:outputText value="{!$Label.site.stay_tuned}"/>
+      <apex:outputText escape="false" value=" {!$Label.site.get_in_touch}">
+      <apex:param value="mailto:{!HTMLENCODE($Site.AdminEmailAddress)}"/>
+      <apex:param value="{!$Label.site.email_us}"/> -->
+        <apex:outputText value="The Online Learning Consortium will be performing upgrades to its Member Portal from Friday, Oct. 29 at 5:00 PM (EDT) to Monday, Nov. 1 at 8:00 AM (EDT). During this time, you will not be able to access the Member Portal or log in to your account. We apologize for the inconvenience. "/>
+      
+   </apex:define>
+  </apex:composition>
+</apex:page>

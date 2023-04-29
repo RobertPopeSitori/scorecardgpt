@@ -1,0 +1,197 @@
+<apex:page controller="AttendeeBadgeInformation" renderAs="pdf" showHeader="false" sidebar="false" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false" readOnly="true">
+    <head>
+        <style>
+            @page {
+            size: 8.5in 11in;
+            margin-top: -0.33in; 
+            margin-left: 0in;
+            margin-right:  0in;
+            margin-bottom: 0in;
+            }
+            .page-break {
+            display:block;
+            }
+            body {
+            font-family: Arial Unicode MS;
+            }
+            table,th,td{
+            <!-- border: 0.1px solid black; -->
+            border-collapse: collapse;
+            margin-right: .25in;
+            }
+        </style>
+    </head>
+    <apex:variable value="{!1}" var="badgeIndex"/>
+    
+    <apex:repeat value="{!Attendee}" var="badge">
+        
+        <!-- <div style="{!if(Attendee.size != badge.count,true,false)}"> -->
+        <div style="{!if(badgeIndex == Attendee.size,'','page-break-after: always;')}">
+            <apex:variable value="{!badgeIndex + 1}" var="badgeIndex"/><br/>
+            <table style="width:100%;margin-top: 0in;">
+                <tr>
+                    <!-- Top left, Last, first, amount due and barcode -->
+                    <td style="max-width:4in;width:4in;max-height:1in;height:1in;overflow: hidden;">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!badge.attendee.EventApi__Contact__r.LastName},
+                        &nbsp; {!badge.attendee.EventApi__Contact__r.FirstName}
+                        
+                        &nbsp;Balance Due: ${!badge.attendee.PaymentDue__c}
+                        &nbsp;  <img src="{!badge.imageUrl}" style="width:35%"/>
+                    </td>
+                    <!-- Top Right - Agenda/Registration Item 1 -->
+                    <td style="max-width:4in;width:4in;max-height:1in;height:1in;overflow: hidden;">
+                        <li>{!badge.firstRegItem} &nbsp;
+                            <apex:outputText value="{0,date,dd'/'MM'/'yyyy}" >  
+                                <apex:param value="{!badge.startDate}"/>  
+                            </apex:outputText>  
+                            <apex:outputText value="{!badge.starttime}" rendered="{!NOT(ISNULL(badge.ScheduledItem)) }"/>
+                            <apex:outputText value="{!badge.endtime}" rendered="{!NOT(ISNULL(badge.ScheduledItem)) }"/>
+                            
+                            <apex:outputText value="{!badge.Room}" rendered="{!If(badge.firstRegItem == 'Scheduled Agenda Item A - Display Name' ,true,false) }"/>
+                            
+                        </li>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="max-width:4in;
+                               max-height:3in;
+                               height:3in;
+                               width:4in;
+                               overflow:hidden;">
+                        <li>
+                            <!--  {!badge.attendee.EventApi__Attendee_Event__r.Static_Event_Ticket__c} -->
+                            {!badge.registrationItem[0]} {!badge.registereditemsstarttime[0]}  {!badge.registereditemsendtime[0]}
+                            <!--  <apex:outputText value="{0,date,dd'/'MM'/'yyyy}" >  
+<apex:param value="{!badge.registereditemsdate[0]}"/>  
+</apex:outputText> -->
+                            {!badge.registereditemsdate[0]}
+                            
+                            <apex:outputText value="{!badge.registrationItemRoom[0]}" rendered="{!If(badge.registrationItem[0] == 'Scheduled Agenda Item A - Display Name' ,true,false) }"/>
+                        </li>
+                        <br/>
+                        <li>
+                            {!badge.registrationItem[1]}
+                            {!badge.registereditemsstarttime[1]}  {!badge.registereditemsendtime[1]}
+                            {!badge.registereditemsdate[1]}
+                            <apex:outputText value="{!badge.registrationItemRoom[1]}" rendered="{!If(badge.registrationItem[1] == 'Scheduled Agenda Item A - Display Name' ,true,false) }"/>
+                            
+                            
+                            
+                        </li>
+                    </td>
+                    <!-- Name Badge -->
+                    <td>
+                        <div style="max-width:4in;
+                                    max-height:3in;
+                                    height:3in;
+                                    width:4inpx;
+                                    overflow: hidden;">
+                            
+                            <div align="center"> 
+                                <!--<img src="{!$Resource.BatchPrintingLogo}" style="height:0.6in;width:350px;overflow:hidden;"/>
+<apex:image id="theImage" value="{!$Resource.logourlBatchPrinting}" width="300" height="50" alt="Description of image here"/>-->
+                                <img id="image1" src="{!badge.attendee.EventApi__Attendee_Event__r.LogoUrl__c}" style="height:60px;width:350px;overflow:hidden;"/>
+                            </div>
+                            <div align="center" style="line-height: 1.2;">
+                                <span style="font-size:15px; font-weight:1000;">
+                                    
+                                    <!-- <apex:outputText value="{!LEFT(badge.attendee.EventApi__Contact__r.FirstName,35)}"></apex:outputText>-->
+                          <b><span style="font-size:30px; font-weight:2000;"><apex:outputText value="{!LEFT(badge.attendee.EventApi__Contact__r.FirstName,35)}" rendered="{!ISNULL(badge.attendee.nickname__c) }"/></span></b>
+                          <b><span style="font-size:30px; font-weight:2000;"><apex:outputText value="{!LEFT(badge.attendee.Nickname__c,35)}" rendered="{!NOT(ISNULL(badge.attendee.nickname__c)) }"/></span></b><br/>
+                          <span style="font-size:20px; font-weight:800;"><apex:outputText value="{!LEFT(badge.attendee.EventApi__Contact__r.LastName,35)}"></apex:outputText><br/></span>
+                                <span>{!badge.attendee.EventApi__Contact__r.Title}</span><br/>
+                                <span style="font-size:14px; font-weight:1000;"><b>{!badge.attendee.EventApi__Account__r.name}</b></span><br/>
+                                </span>
+                            </div>
+                            <div align="right" style=";">
+                                <div style="float: left;padding:25px;"><b>{!badge.attendee.Pronouns__c}</b></div> 
+                                <apex:image url="{!'https://chart.googleapis.com/chart?chs=450x450&cht=qr&chl=' +badge.attendee.Id+'^'+badge.attendee.EventApi__Contact__r.FirstName+'^'+badge.attendee.EventApi__Contact__r.LastName+'^'+badge.attendee.EventApi__Contact__r.Email+'^'+badge.attendee.EventApi__Account__r.name+'^'+badge.attendee.EventApi__Contact__r.title+'^'+badge.attendee.EventApi__Contact__r.mailingcity+'^'+badge.attendee.EventApi__Contact__r.mailingcity+'^'+badge.attendee.EventApi__Contact__r.mailingstate+'^'+badge.attendee.EventApi__Contact__r.MailingPostalCode+'^'+badge.attendee.EventApi__Contact__r.Phone+'^'+ badge.attendee.EventApi__Contact__r.Twitter_URL__c}" style="width:28%;height:31%;padding-bottom:1in;padding-right:25px;"/>
+                            </div>
+                        </div>
+                    </td>
+                    
+                </tr>
+                <tr>
+                    
+                    <td style="max-width:4in;max-height:1.5in;height:1.5in;overflow:hidden;width:4in;">
+                        <li>
+                            {!badge.registrationItem[2]}
+                            {!badge.registereditemsstarttime[2]}  {!badge.registereditemsendtime[2]}
+                            {!badge.registereditemsdate[2]}
+                            <apex:outputText value="{!badge.registrationItemRoom[2]}" rendered="{!If(badge.registrationItem[2] == 'Scheduled Agenda Item A - Display Name' ,true,false) }"/>
+                        </li>
+                    </td>
+                    <td rowspan="2" style="max-width:4in;max-height:3in;width:4in;height:3in;font-size:11px;font-weight:1000;overflow: hidden;">
+                        <li>{!badge.firstRegItem}</li>
+                        <apex:repeat value="{!badge.registrationItem}" var="registration" >
+                            <li>{!registration} </li> 
+                        </apex:repeat>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="max-width:4in;max-height:1.5in;height:1.5in;overflow:hidden;width:4in;">
+                        <li>
+                            {!badge.registrationItem[3]}
+                            {!badge.registereditemsstarttime[3]}  {!badge.registereditemsendtime[3]}
+                            {!badge.registereditemsdate[3]}
+                            <apex:outputText value="{!badge.registrationItemRoom[3]}" rendered="{!If(badge.registrationItem[3] == 'Scheduled Agenda Item A - Display Name' ,true,false) }"/>
+                            
+                            
+                            
+                        </li>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="max-width:4in;max-height:1.5in;height:1.5in;overflow:hidden;width:4in;">
+                        <li>
+                            
+                            {!badge.registrationItem[4]}
+                            {!badge.registereditemsstarttime[4]}  {!badge.registereditemsendtime[4]}
+                            {!badge.registereditemsdate[4]}
+                            <apex:outputText value="{!badge.registrationItemRoom[4]}" rendered="{!If(badge.registrationItem[4] == 'Scheduled Agenda Item A - Display Name' ,true,false) }"/>
+                            
+                            
+                        </li>
+                    </td>
+                    <td rowspan="2" style="max-width:4in;max-height:3in;height:3in;overflow:hidden;padding-left:0.3in;padding-right:0.3in;">
+                        
+                        <apex:outputText escape="false" value="{!badge.attendee.EventApi__Attendee_Event__r.General_Information__c}" />
+                        
+                    </td>
+                </tr>
+                <tr>
+                    <td style="max-width:4in;max-height:1.5in;height:1.5in;overflow:hidden;width:4in;">
+                        <li>
+                            <!-- {!badge.registrationItem[5]}
+{!badge.registereditemsstarttime[5]} {!badge.registereditemsendtime[5]}
+{!badge.registereditemsdate[5]}
+<apex:outputText value="{!badge.registrationItemRoom[5]}" rendered="{!If(badge.registrationItem[5] == 'Scheduled Agenda Item A - Display Name' ,true,false) }"/>
+
+-->
+                        </li>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="max-width:4in;width:4in;max-height:0.9in;height:0.9in;overflow: hidden;">
+                        <li>
+                            
+                            
+                        </li>
+                    </td>
+                    <td style="max-width:4in;width:4in;max-height:0.9in;height:0.9in;overflow: hidden;">
+                        <li>
+                            
+                            
+                        </li>
+                    </td>
+                    
+                    
+                </tr>
+            </table>
+        </div>
+        <!--  </div> ->
+<!-- <div style="{!if(Attendee.size != badge.count,true,false)}">
+No Attendee Available for this Date Range
+</div> -->
+    </apex:repeat>
+</apex:page>

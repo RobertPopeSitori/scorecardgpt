@@ -1,0 +1,23 @@
+/**
+ * Created by cmudd on 2019-06-03.
+ */
+
+.THIS .slds-card__body{
+    width:75%;
+}
+
+.THIS ::-webkit-input-placeholder {
+    text-align: center;
+}
+
+.THIS :-moz-placeholder { /* Firefox 18- */
+    text-align: center;
+}
+
+.THIS ::-moz-placeholder {  /* Firefox 19+ */
+    text-align: center;
+}
+
+.THIS :-ms-input-placeholder {
+    text-align: center;
+}

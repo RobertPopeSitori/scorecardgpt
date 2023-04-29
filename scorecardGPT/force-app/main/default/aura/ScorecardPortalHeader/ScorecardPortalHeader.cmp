@@ -1,0 +1,45 @@
+<aura:component controller="ScorecardPortalHeaderController" implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" access="global">
+
+  <aura:attribute name="networkPath" type="string" default="/scorecards/s/"/>
+
+  <aura:handler name="init" value="{!this}" action="{!c.onInit}" />
+
+  <div class="slds">
+    <div class="slds-grid slds-gutters">
+      
+      <div class="slds-col slds-size_2-of-12">
+        <span class="">
+          <img alt="My Scorecards" src="{!$Resource.Portal + '/images/logo.png'}" title="My Scorecards" />
+        </span>
+      </div>
+
+      <div class="slds-col slds-size_9-of-12">
+        <div class="slds-context-bar slds-grid mgl-navbar">
+          <nav class="slds-context-bar__secondary mgl-navbar-container" role="navigation">
+            <div class="slds-context-bar__item mgl-navbar-home">
+              <a href="/scorecards/s/" class="slds-context-bar__label-action" title="Home">
+                <lightning:icon iconName="utility:home" size="small" class="mgl-navbar-homebutton" />
+              </a>
+            </div>
+            <ul class="slds-grid mgl-navbar-ul">
+              <li class="slds-context-bar__item" style="width: auto; padding-left: 10px; padding-right: 10px;">
+                <a href="/scorecards/s/" class="slds-context-bar__label-action" title="Home">
+                  <span class="slds-no-truncate">My Scorecards</span>
+                </a>
+              </li>
+              <li class="slds-context-bar__item" style="width: auto; padding-left: 10px; padding-right: 10px;">
+                <a href="#" class="slds-context-bar__label-action" title="Help">
+                  <span class="slds-no-truncate">Help</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+
+      <div class="slds-col slds-size_1-of-12"></div>
+    </div>
+
+    
+  </div>
+</aura:component>
